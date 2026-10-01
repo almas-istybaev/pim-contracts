@@ -11,7 +11,7 @@ pip install -e /path/to/pim-contracts
 
 ### В Docker / CI / Production:
 ```bash
-pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.1.0"
+pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.1.1"
 ```
 
 ## Правила эволюции схем (SemVer):

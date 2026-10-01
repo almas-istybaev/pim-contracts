@@ -1,5 +1,5 @@
 """
-Shared Domain Enums for Supplier Ingestion & PIM.
+Shared Domain Enums for data ingestion and product information management.
 """
 from enum import Enum
 

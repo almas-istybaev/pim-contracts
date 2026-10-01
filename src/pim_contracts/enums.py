@@ -7,10 +7,10 @@ from enum import Enum
 class SourceType(str, Enum):
     """Origin channel of supplier feed."""
     MOYSKLAD_API = "moysklad_api"
+    TOPMAX_API = "topmax_api"
     MULTI_SOURCE_SCRAPER = "multi_source_scraper"
     TELEGRAM_EXCEL = "telegram_excel"
     MANUAL_IMPORT = "manual_import"
-    API = "api"
     UNKNOWN = "unknown"
 
 

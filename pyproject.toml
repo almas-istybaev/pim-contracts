@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pim-contracts"
-version = "1.1.0"
-description = "Canonical event contracts, schemas and AMQP topology for PIM and Ingestion microservices"
+version = "1.1.1"
+description = "Canonical event contracts, schemas and AMQP topology for microservices"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [

@@ -1,9 +1,6 @@
 # 📦 PIM Contracts (`pim-contracts`)
 
-Единый источник истины (Single Source of Truth) для контрактов, событий очередей и топологии RabbitMQ между микросервисами:
-* **`ingestion-service`** (сбор каталогов, цен, остатков, адаптеры поставщиков).
-* **`inventory-monitor`** (ПИМ, мастер-каталог, управление остатками и резервами).
-* **Storefront / Витрины** (публикация витринных цен и доступности).
+Единый источник истины (Single Source of Truth) для контрактов, событий очередей и топологии RabbitMQ между микросервисами.
 
 ## Установка
 
@@ -14,7 +11,7 @@ pip install -e /path/to/pim-contracts
 
 ### В Docker / CI / Production:
 ```bash
-pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.1.0"
+pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.1.1"
 ```
 
 ## Правила эволюции схем (SemVer):

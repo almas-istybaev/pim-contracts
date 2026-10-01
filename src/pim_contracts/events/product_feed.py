@@ -31,7 +31,7 @@ class CanonicalProductFeedEvent(BaseEvent):
         default_factory=list,
         description="Raw source media URLs without local downloading or processing",
     )
-    source_channel: SourceType = Field(default=SourceType.API, description="Source origin channel")
+    source_channel: SourceType = Field(default=SourceType.UNKNOWN, description="Source origin channel")
     payload_hash: Optional[str] = Field(default=None, description="MD5 composite state hash (price_hash:stock_hash)")
 
 

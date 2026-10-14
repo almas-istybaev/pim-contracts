@@ -11,6 +11,11 @@ from pim_contracts.constants import (
     SCHEMA_VERSION,
 )
 from pim_contracts.enums import Currency, EventType, SourceType
+from pim_contracts.records import (
+    MasterCategoryRecord,
+    MasterCharacteristicRecord,
+    MasterProductRecord,
+)
 from pim_contracts.events import (
     BaseEvent,
     CanonicalProductFeedEvent,
@@ -35,4 +40,7 @@ __all__ = [
     "CanonicalProductFeedEvent",
     "ProductStockUpdateEvent",
     "ProductPriceUpdateEvent",
+    "MasterProductRecord",
+    "MasterCategoryRecord",
+    "MasterCharacteristicRecord",
 ]

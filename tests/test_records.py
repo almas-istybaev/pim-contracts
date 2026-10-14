@@ -24,7 +24,7 @@ def test_product_optional_fields_default_to_none():
     for field in (
         "mpn", "gpc_id", "brand", "shipping_weight", "shipping_length",
         "shipping_width", "shipping_height", "category", "description",
-        "cost_price",
+        "cost_price", "category_slug",
     ):
         assert getattr(rec, field) is None, field
 
@@ -45,6 +45,7 @@ def test_minimal_category_record_parses_and_defaults():
     assert cat.parent_id is None
     assert cat.description is None
     assert cat.photo is None
+    assert cat.slug is None
 
 
 def test_category_unknown_extra_fields_ignored():
@@ -52,4 +53,12 @@ def test_category_unknown_extra_fields_ignored():
         {"id": 11, "name": "Ванны", "parent_id": 10, "slug": "vanny", "children": []}
     )
     assert cat.parent_id == 10
-    assert "slug" not in cat.model_dump()
+    assert cat.slug == "vanny"
+    assert "children" not in cat.model_dump()
+
+
+def test_slug_fields_parse():
+    cat = MasterCategoryRecord(id=1, name="Смесители", slug="smesiteli")
+    assert cat.slug == "smesiteli"
+    rec = MasterProductRecord(id=1, name="X", price=1.0, stock="в наличии", category_slug="smesiteli")
+    assert rec.category_slug == "smesiteli"

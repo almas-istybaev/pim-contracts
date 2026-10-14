@@ -1,8 +1,8 @@
 """
-Master (Golden Record) product and category DTOs exposed by inventory-monitor.
+Master (Golden Record) product and category DTOs exposed by inventory.
 
 Mirrors the export payload of the santeh24 integration:
-  - inventory-monitor: app/modules/integrations/santeh24/schemas.py
+  - inventory: app/modules/integrations/santeh24/schemas.py
     (Santeh24ProductItem, Santeh24CategoryItem, Santeh24Characteristic)
 Consumers: santeh24.kz frontend/src/lib/pim.ts (PIMProduct, PIMCategory).
 """
@@ -21,7 +21,7 @@ class MasterCharacteristicRecord(BaseModel):
 
 
 class MasterProductRecord(BaseModel):
-    """Master product record as exported by inventory-monitor for storefronts."""
+    """Master product record as exported by inventory for storefronts."""
 
     model_config = ConfigDict(extra="ignore", from_attributes=True)
 
@@ -35,6 +35,10 @@ class MasterProductRecord(BaseModel):
     shipping_width: Optional[str] = Field(default=None, description="Shipping width")
     shipping_height: Optional[str] = Field(default=None, description="Shipping height")
     category: Optional[str] = Field(default=None, description="Category name")
+    category_slug: Optional[str] = Field(
+        default=None,
+        description="Stable URL slug of the product category (owned by PIM, since 1.3.0)",
+    )
     description: Optional[str] = Field(default=None, description="Resolved product description")
     characteristics: List[MasterCharacteristicRecord] = Field(
         default_factory=list,
@@ -51,12 +55,16 @@ class MasterProductRecord(BaseModel):
 
 
 class MasterCategoryRecord(BaseModel):
-    """Category (taxonomy node) as exported by inventory-monitor for storefronts."""
+    """Category (taxonomy node) as exported by inventory for storefronts."""
 
     model_config = ConfigDict(extra="ignore", from_attributes=True)
 
     id: int = Field(..., description="Category primary key")
     name: str = Field(..., description="Category name")
+    slug: Optional[str] = Field(
+        default=None,
+        description="Stable URL slug owned by PIM; does not change on rename (since 1.3.0)",
+    )
     parent_id: Optional[int] = Field(default=None, description="Parent category ID")
     description: Optional[str] = Field(default=None, description="Category description")
     photo: Optional[str] = Field(default=None, description="Public photo URL")

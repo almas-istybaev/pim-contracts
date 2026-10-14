@@ -125,3 +125,14 @@ def test_json_schema_generation():
     assert "supplier_sku" in schema["properties"]
     assert "stock" in schema["properties"]
     assert "raw_price" in schema["properties"]
+
+
+def test_package_version_matches_pyproject():
+    """__version__ — версия пакета, а не SCHEMA_VERSION формата событий."""
+    import tomllib
+    from pathlib import Path
+
+    import pim_contracts
+
+    pyproject = tomllib.loads((Path(__file__).parents[1] / "pyproject.toml").read_text())
+    assert pim_contracts.__version__ == pyproject["project"]["version"]

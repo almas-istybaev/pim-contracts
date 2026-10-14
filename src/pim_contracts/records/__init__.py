@@ -1,5 +1,5 @@
 """
-Read-only master record DTOs served by inventory-monitor to storefront consumers.
+Read-only master record DTOs served by inventory to storefront consumers.
 """
 from pim_contracts.records.product import (
     MasterCategoryRecord,

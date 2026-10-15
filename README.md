@@ -11,10 +11,17 @@ pip install -e /path/to/pim-contracts
 
 ### В Docker / CI / Production:
 ```bash
-pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.2.0"
+pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.4.0"
 ```
 
 ## Правила эволюции схем (SemVer):
 1. **Forward Compatibility:** Все схемы поддерживают `extra="ignore"`. Если продюсер добавил новое поле, консьюмер старой версии не падает.
 2. **Обязательные значения по умолчанию:** Любые новые поля обязаны иметь дефолтное значение.
 3. **Запрет breaking changes:** Переименование или удаление полей допустимо только при повышении мажорной версии (например, v2.0.0).
+
+## Что нового
+
+### 1.4.0
+Только опциональные поля (`None` по умолчанию), старый JSON без них валиден:
+- `MasterCharacteristicRecord`: `code`, `group` (`"base" | "category"`), `unit`, `numeric_value`.
+- `MasterProductRecord`: `shipping_dimension_unit`, `shipping_weight_unit`, `seo_title`, `seo_description`.

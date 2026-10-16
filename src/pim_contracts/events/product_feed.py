@@ -1,6 +1,8 @@
 from decimal import Decimal
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from pydantic import Field
+
 from pim_contracts.enums import Currency, SourceType
 from pim_contracts.events.base import BaseEvent
 
@@ -12,10 +14,10 @@ class CanonicalProductFeedEvent(BaseEvent):
     """
     supplier_id: str = Field(..., min_length=1, description="Supplier slug / ID")
     supplier_sku: str = Field(..., min_length=1, description="Supplier SKU / article")
-    normalized_mpn: Optional[str] = Field(default=None, description="Sanitized alphanumeric MPN")
+    normalized_mpn: str | None = Field(default=None, description="Sanitized alphanumeric MPN")
     name: str = Field(..., min_length=1, description="Product title / name")
-    description: Optional[str] = Field(default=None, description="Product description if provided")
-    attributes: Dict[str, Any] = Field(
+    description: str | None = Field(default=None, description="Product description if provided")
+    attributes: dict[str, Any] = Field(
         default_factory=dict,
         description="Raw warehouse properties (physical_stock, reserve, uom, in_transit)",
     )
@@ -27,12 +29,12 @@ class CanonicalProductFeedEvent(BaseEvent):
     is_wholesale_available: bool = Field(default=True, description="Wholesale channel availability")
     is_retail_available: bool = Field(default=True, description="Retail channel availability")
 
-    raw_media_urls: List[str] = Field(
+    raw_media_urls: list[str] = Field(
         default_factory=list,
         description="Raw source media URLs without local downloading or processing",
     )
     source_channel: SourceType = Field(default=SourceType.UNKNOWN, description="Source origin channel")
-    payload_hash: Optional[str] = Field(default=None, description="MD5 composite state hash (price_hash:stock_hash)")
+    payload_hash: str | None = Field(default=None, description="MD5 composite state hash (price_hash:stock_hash)")
 
 
 class ProductStockUpdateEvent(BaseEvent):
@@ -41,12 +43,12 @@ class ProductStockUpdateEvent(BaseEvent):
     """
     supplier_id: str = Field(..., min_length=1)
     supplier_sku: str = Field(..., min_length=1)
-    normalized_mpn: Optional[str] = Field(default=None)
+    normalized_mpn: str | None = Field(default=None)
     raw_price: Decimal = Field(default=Decimal("0.0"), ge=0)
     stock: int = Field(default=0, ge=0)
     currency: Currency = Field(default=Currency.KZT)
-    payload_hash: Optional[str] = Field(default=None)
-    reason: Optional[str] = Field(default=None)
+    payload_hash: str | None = Field(default=None)
+    reason: str | None = Field(default=None)
 
 
 class ProductPriceUpdateEvent(BaseEvent):
@@ -55,8 +57,8 @@ class ProductPriceUpdateEvent(BaseEvent):
     """
     supplier_id: str = Field(..., min_length=1)
     supplier_sku: str = Field(..., min_length=1)
-    normalized_mpn: Optional[str] = Field(default=None)
-    old_price: Optional[Decimal] = Field(default=None)
+    normalized_mpn: str | None = Field(default=None)
+    old_price: Decimal | None = Field(default=None)
     new_price: Decimal = Field(default=Decimal("0.0"), ge=0)
     currency: Currency = Field(default=Currency.KZT)
-    payload_hash: Optional[str] = Field(default=None)
+    payload_hash: str | None = Field(default=None)

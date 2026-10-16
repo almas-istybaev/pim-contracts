@@ -22,7 +22,9 @@ from pim_contracts.events import (
 )
 from pim_contracts.records import (
     MasterCategoryRecord,
+    MasterCategoryTranslation,
     MasterCharacteristicRecord,
+    MasterCharacteristicTranslation,
     MasterProductRecord,
     MasterProductTranslation,
 )
@@ -46,7 +48,9 @@ __all__ = [
     "Currency",
     "EventType",
     "MasterCategoryRecord",
+    "MasterCategoryTranslation",
     "MasterCharacteristicRecord",
+    "MasterCharacteristicTranslation",
     "MasterProductRecord",
     "MasterProductTranslation",
     "ProductPriceUpdateEvent",

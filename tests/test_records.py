@@ -1,5 +1,7 @@
 from pim_contracts import (
     MasterCategoryRecord,
+    MasterCategoryTranslation,
+    MasterCharacteristicTranslation,
     MasterProductRecord,
     MasterProductTranslation,
 )
@@ -189,3 +191,75 @@ def test_translation_status_rejects_unknown_value():
 
     with pytest.raises(ValidationError):
         MasterProductTranslation(name="x", status="draft")
+
+
+def test_payload_1_6_0_without_category_and_characteristic_translations_is_valid():
+    """Payload формата 1.6.0 (без translations у категории и характеристик) остаётся валидным."""
+    cat = MasterCategoryRecord.model_validate(
+        {"id": 1, "name": "Смесители", "slug": "smesiteli", "parent_id": None}
+    )
+    assert cat.translations == {}
+    rec = MasterProductRecord.model_validate(
+        {
+            "id": 12, "name": "Смеситель", "price": 1.0, "stock": "в наличии",
+            "characteristics": [{"name": "Цвет", "value": "Хром", "code": "color"}],
+            "translations": {"kk": {"name": "Араластырғыш", "status": "machine"}},
+        }
+    )
+    assert rec.characteristics[0].translations == {}
+
+
+def test_category_translations_roundtrip():
+    cat = MasterCategoryRecord.model_validate(
+        {
+            "id": 2, "name": "Ванны", "slug": "vanny",
+            "translations": {"kk": {"name": "Ванналар", "status": "machine", "extra": 1}},
+        }
+    )
+    kk = cat.translations["kk"]
+    assert isinstance(kk, MasterCategoryTranslation)
+    assert kk.description is None
+    assert kk.is_outdated is False
+    restored = MasterCategoryRecord.model_validate_json(cat.model_dump_json())
+    assert restored == cat
+
+
+def test_characteristic_translations_roundtrip():
+    rec = MasterCharacteristicRecord.model_validate(
+        {
+            "name": "Ширина", "value": "50 см", "code": "width", "unit": "см",
+            "numeric_value": 50.0,
+            "translations": {
+                "kk": {
+                    "name": "Ені", "value": "50 см", "unit": "см",
+                    "status": "reviewed", "is_outdated": True,
+                },
+            },
+        }
+    )
+    kk = rec.translations["kk"]
+    assert isinstance(kk, MasterCharacteristicTranslation)
+    assert kk.status == "reviewed"
+    assert kk.is_outdated is True
+    restored = MasterCharacteristicRecord.model_validate_json(rec.model_dump_json())
+    assert restored == rec
+
+
+def test_characteristic_translation_defaults():
+    kk = MasterCharacteristicTranslation(status="machine")
+    assert kk.name is None
+    assert kk.value is None
+    assert kk.unit is None
+    assert kk.is_outdated is False
+
+
+def test_category_and_characteristic_translation_status_rejects_unknown_value():
+    import pytest
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):
+        MasterCategoryTranslation(name="x", status="draft")
+    with pytest.raises(ValidationError):
+        MasterCharacteristicTranslation(name="x", status="draft")
+    with pytest.raises(ValidationError):
+        MasterCategoryTranslation(name="x")

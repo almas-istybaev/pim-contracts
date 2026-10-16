@@ -11,6 +11,34 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 
+class MasterCharacteristicTranslation(BaseModel):
+    """Translation of one product characteristic into one storefront language (since 1.7.0)."""
+
+    model_config = ConfigDict(extra="ignore", from_attributes=True)
+
+    name: str | None = Field(default=None, description="Translated characteristic name")
+    value: str | None = Field(
+        default=None,
+        description=(
+            "Translated value in the same format as MasterCharacteristicRecord.value: "
+            "options joined with ', ', number with unit, 'Иә'/'Жоқ' for booleans; "
+            "None — value is not translated, storefront shows the Russian one"
+        ),
+    )
+    unit: str | None = Field(default=None, description="Translated unit of measurement")
+    status: Literal["machine", "reviewed"] = Field(
+        ...,
+        description=(
+            "'machine' — draft translated by Claude, 'reviewed' — checked by a human; "
+            "'reviewed' only when the name, the unit and every value option are reviewed"
+        ),
+    )
+    is_outdated: bool = Field(
+        default=False,
+        description="True when the Russian source of any part (name, unit, value option) changed after translation",
+    )
+
+
 class MasterCharacteristicRecord(BaseModel):
     """Key-value characteristic of a master product."""
 
@@ -33,6 +61,10 @@ class MasterCharacteristicRecord(BaseModel):
     numeric_value: float | None = Field(
         default=None,
         description="Numeric form of the value for numeric attributes (since 1.4.0)",
+    )
+    translations: dict[str, MasterCharacteristicTranslation] = Field(
+        default_factory=dict,
+        description="Characteristic translations keyed by language code, currently only 'kk' (since 1.7.0)",
     )
 
 
@@ -120,6 +152,23 @@ class MasterProductRecord(BaseModel):
     )
 
 
+class MasterCategoryTranslation(BaseModel):
+    """Translation of category texts into one storefront language (since 1.7.0)."""
+
+    model_config = ConfigDict(extra="ignore", from_attributes=True)
+
+    name: str | None = Field(default=None, description="Translated category name")
+    description: str | None = Field(default=None, description="Translated category description")
+    status: Literal["machine", "reviewed"] = Field(
+        ...,
+        description="'machine' — draft translated by Claude, 'reviewed' — checked by a human",
+    )
+    is_outdated: bool = Field(
+        default=False,
+        description="True when the Russian source text changed after this translation was made",
+    )
+
+
 class MasterCategoryRecord(BaseModel):
     """Category (taxonomy node) as exported by inventory for storefronts."""
 
@@ -134,3 +183,7 @@ class MasterCategoryRecord(BaseModel):
     parent_id: int | None = Field(default=None, description="Parent category ID")
     description: str | None = Field(default=None, description="Category description")
     photo: str | None = Field(default=None, description="Public photo URL")
+    translations: dict[str, MasterCategoryTranslation] = Field(
+        default_factory=dict,
+        description="Category text translations keyed by language code, currently only 'kk' (since 1.7.0)",
+    )

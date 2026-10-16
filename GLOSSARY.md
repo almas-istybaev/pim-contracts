@@ -8,6 +8,7 @@
 
 - **PIM (Product Information Management)**: Центральная подсистема управления каталогами товаров, категориями, характеристиками и мастер-данными.
 - **Master Record (Golden Record, Золотая запись)**: Каноническое представление товара, категории или характеристики (`MasterProductRecord`, `MasterCategoryRecord`, `MasterCharacteristicRecord`), прошедшее дедупликацию, обогащение и нормализацию в `inventory-monitor` и экспортируемое витринам (например, `santeh24.kz`).
+- **Translation (Перевод)**: Перевод текстов Master Record на язык витрины, ключ — код языка (сейчас только `kk`): `MasterProductTranslation` (с 1.6.0), `MasterCategoryTranslation` и `MasterCharacteristicTranslation` (с 1.7.0). `status`: `machine` — черновик Claude, `reviewed` — проверен человеком; `is_outdated` — RU-исходник изменился после перевода. Пустое поле перевода → витрина показывает RU.
 - **AMQP Topology**: Структура точек обмена (exchanges), очередей (queues) и ключей маршрутизации (routing keys) RabbitMQ для межсервисного асинхронного взаимодействия.
 - **Canonical Product Feed Event (`CanonicalProductFeedEvent`)**: Единое каноническое событие пакета товаров из фида поставщика.
 - **Stock Update Event (`ProductStockUpdateEvent`)**: Событие изменения складских остатков и статуса наличия товара.

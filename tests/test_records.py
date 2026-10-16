@@ -126,3 +126,26 @@ def test_product_new_fields_roundtrip():
     assert restored == rec
     assert restored.characteristics[1].numeric_value == 30.0
     assert restored.shipping_dimension_unit == "cm"
+
+
+def test_payload_1_4_0_without_slug_fields_is_valid():
+    """Payload формата 1.4.0 (без slug/previous_slugs) остаётся валидным."""
+    rec = MasterProductRecord.model_validate(
+        {
+            "id": 8, "name": "Унитаз", "price": 50.0, "stock": "в наличии",
+            "category_slug": "unitazy", "seo_title": "Унитаз",
+            "characteristics": [{"name": "Цвет", "value": "белый", "code": "color"}],
+        }
+    )
+    assert rec.slug is None
+    assert rec.previous_slugs == []
+
+
+def test_product_slug_fields_roundtrip():
+    rec = MasterProductRecord(
+        id=9, name="Смеситель", price=1.0, stock="в наличии",
+        slug="smesitel-grohe", previous_slugs=["smesitel", "smesitel-old"],
+    )
+    restored = MasterProductRecord.model_validate_json(rec.model_dump_json())
+    assert restored == rec
+    assert restored.previous_slugs == ["smesitel", "smesitel-old"]

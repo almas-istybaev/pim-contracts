@@ -1,7 +1,8 @@
 import uuid
 from datetime import datetime, timezone
-from typing import Optional
+
 from pydantic import BaseModel, ConfigDict, Field
+
 from pim_contracts.constants import SCHEMA_VERSION
 
 
@@ -27,7 +28,7 @@ class BaseEvent(BaseModel):
         default_factory=lambda: datetime.now(timezone.utc),
         description="UTC timestamp when the event was originally generated",
     )
-    trace_id: Optional[str] = Field(
+    trace_id: str | None = Field(
         default=None,
         description="Distributed tracing correlation ID",
     )

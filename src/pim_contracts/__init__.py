@@ -9,21 +9,21 @@ from pim_contracts.constants import (
     PIM_RAW_FEEDS_QUEUE,
     ROUTING_KEY_FEED_ALL,
     ROUTING_KEY_FEED_CANONICAL,
-    ROUTING_KEY_FEED_STOCK_UPDATE,
     ROUTING_KEY_FEED_PRICE_UPDATE,
+    ROUTING_KEY_FEED_STOCK_UPDATE,
     SCHEMA_VERSION,
 )
 from pim_contracts.enums import Currency, EventType, SourceType
-from pim_contracts.records import (
-    MasterCategoryRecord,
-    MasterCharacteristicRecord,
-    MasterProductRecord,
-)
 from pim_contracts.events import (
     BaseEvent,
     CanonicalProductFeedEvent,
     ProductPriceUpdateEvent,
     ProductStockUpdateEvent,
+)
+from pim_contracts.records import (
+    MasterCategoryRecord,
+    MasterCharacteristicRecord,
+    MasterProductRecord,
 )
 
 # Версия пакета (pyproject.toml); SCHEMA_VERSION — отдельно, версия формата событий.
@@ -37,17 +37,17 @@ __all__ = [
     "PIM_RAW_FEEDS_QUEUE",
     "ROUTING_KEY_FEED_ALL",
     "ROUTING_KEY_FEED_CANONICAL",
-    "ROUTING_KEY_FEED_STOCK_UPDATE",
     "ROUTING_KEY_FEED_PRICE_UPDATE",
+    "ROUTING_KEY_FEED_STOCK_UPDATE",
     "SCHEMA_VERSION",
-    "SourceType",
-    "Currency",
-    "EventType",
     "BaseEvent",
     "CanonicalProductFeedEvent",
-    "ProductStockUpdateEvent",
-    "ProductPriceUpdateEvent",
-    "MasterProductRecord",
+    "Currency",
+    "EventType",
     "MasterCategoryRecord",
     "MasterCharacteristicRecord",
+    "MasterProductRecord",
+    "ProductPriceUpdateEvent",
+    "ProductStockUpdateEvent",
+    "SourceType",
 ]

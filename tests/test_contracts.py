@@ -1,7 +1,7 @@
 import json
 import uuid
 from decimal import Decimal
-import pytest
+
 from pim_contracts import (
     PIM_EVENTS_EXCHANGE,
     PIM_RAW_FEEDS_QUEUE,
@@ -129,8 +129,9 @@ def test_json_schema_generation():
 
 def test_package_version_matches_pyproject():
     """__version__ — версия пакета, а не SCHEMA_VERSION формата событий."""
-    import tomllib
     from pathlib import Path
+
+    import tomllib
 
     import pim_contracts
 

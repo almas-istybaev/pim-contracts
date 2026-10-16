@@ -1,4 +1,8 @@
-from pim_contracts import MasterCategoryRecord, MasterProductRecord
+from pim_contracts import (
+    MasterCategoryRecord,
+    MasterProductRecord,
+    MasterProductTranslation,
+)
 from pim_contracts.records import MasterCharacteristicRecord
 
 
@@ -149,3 +153,39 @@ def test_product_slug_fields_roundtrip():
     restored = MasterProductRecord.model_validate_json(rec.model_dump_json())
     assert restored == rec
     assert restored.previous_slugs == ["smesitel", "smesitel-old"]
+
+
+def test_payload_1_5_0_without_translations_is_valid():
+    """Payload формата 1.5.0 (без translations) остаётся валидным."""
+    rec = MasterProductRecord.model_validate(
+        {
+            "id": 10, "name": "Ванна", "price": 90.0, "stock": "в наличии",
+            "slug": "vanna-akril", "previous_slugs": ["vanna"],
+        }
+    )
+    assert rec.translations == {}
+
+
+def test_product_translations_roundtrip():
+    rec = MasterProductRecord.model_validate(
+        {
+            "id": 11, "name": "Смеситель", "price": 1.0, "stock": "в наличии",
+            "translations": {
+                "kk": {"name": "Араластырғыш", "status": "reviewed", "extra": 1},
+            },
+        }
+    )
+    kk = rec.translations["kk"]
+    assert isinstance(kk, MasterProductTranslation)
+    assert kk.description is None
+    assert kk.is_outdated is False
+    restored = MasterProductRecord.model_validate_json(rec.model_dump_json())
+    assert restored == rec
+
+
+def test_translation_status_rejects_unknown_value():
+    import pytest
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):
+        MasterProductTranslation(name="x", status="draft")

@@ -24,6 +24,7 @@ from pim_contracts.records import (
     MasterCategoryRecord,
     MasterCharacteristicRecord,
     MasterProductRecord,
+    MasterProductTranslation,
 )
 
 # Версия пакета (pyproject.toml); SCHEMA_VERSION — отдельно, версия формата событий.
@@ -47,6 +48,7 @@ __all__ = [
     "MasterCategoryRecord",
     "MasterCharacteristicRecord",
     "MasterProductRecord",
+    "MasterProductTranslation",
     "ProductPriceUpdateEvent",
     "ProductStockUpdateEvent",
     "SourceType",

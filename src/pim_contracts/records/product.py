@@ -36,6 +36,28 @@ class MasterCharacteristicRecord(BaseModel):
     )
 
 
+class MasterProductTranslation(BaseModel):
+    """Translation of product texts into one storefront language (since 1.6.0)."""
+
+    model_config = ConfigDict(extra="ignore", from_attributes=True)
+
+    name: str | None = Field(default=None, description="Translated product name")
+    description: str | None = Field(default=None, description="Translated product description")
+    seo_title: str | None = Field(default=None, description="Translated SEO meta title")
+    seo_description: str | None = Field(
+        default=None,
+        description="Translated SEO meta description",
+    )
+    status: Literal["machine", "reviewed"] = Field(
+        ...,
+        description="'machine' — draft translated by Claude, 'reviewed' — checked by a human",
+    )
+    is_outdated: bool = Field(
+        default=False,
+        description="True when the Russian source text changed after this translation was made",
+    )
+
+
 class MasterProductRecord(BaseModel):
     """Master product record as exported by inventory for storefronts."""
 
@@ -92,6 +114,10 @@ class MasterProductRecord(BaseModel):
         description="Real available quantity (quantity - reserve - quarantine, min 0)",
     )
     photos: list[str] = Field(default_factory=list, description="Absolute public photo URLs")
+    translations: dict[str, MasterProductTranslation] = Field(
+        default_factory=dict,
+        description="Product text translations keyed by language code, currently only 'kk' (since 1.6.0)",
+    )
 
 
 class MasterCategoryRecord(BaseModel):

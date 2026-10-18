@@ -3,6 +3,7 @@ from pim_contracts import (
     MasterCategoryTranslation,
     MasterCharacteristicTranslation,
     MasterProductRecord,
+    MasterProductRelation,
     MasterProductTranslation,
 )
 from pim_contracts.records import MasterCharacteristicRecord
@@ -263,3 +264,31 @@ def test_category_and_characteristic_translation_status_rejects_unknown_value():
         MasterCharacteristicTranslation(name="x", status="draft")
     with pytest.raises(ValidationError):
         MasterCategoryTranslation(name="x")
+
+
+def test_payload_1_7_0_without_related_is_valid():
+    """Payload формата 1.7.0 (без related) остаётся валидным."""
+    rec = MasterProductRecord.model_validate({"id": 11, "name": "Раковина", "price": 50.0, "stock": "в наличии"})
+    assert rec.related == []
+
+
+def test_product_related_roundtrip():
+    rec = MasterProductRecord.model_validate(
+        {
+            "id": 12, "name": "Раковина", "price": 50.0, "stock": "в наличии",
+            "related": [
+                {"product_id": 20, "relation_type": "REQUIRED_COMPONENT"},
+                {"product_id": 21, "relation_type": "RECOMMENDED"},
+            ],
+        }
+    )
+    assert [(r.product_id, r.relation_type) for r in rec.related] == [(20, "REQUIRED_COMPONENT"), (21, "RECOMMENDED")]
+    assert rec.model_dump()["related"][0] == {"product_id": 20, "relation_type": "REQUIRED_COMPONENT"}
+
+
+def test_relation_type_rejects_unknown_value():
+    import pytest
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):
+        MasterProductRelation(product_id=1, relation_type="ACCESSORY")

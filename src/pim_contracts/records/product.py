@@ -90,6 +90,21 @@ class MasterProductTranslation(BaseModel):
     )
 
 
+class MasterProductRelation(BaseModel):
+    """Link from a master product to another product, set by the content manager in PIM (since 1.8.0)."""
+
+    model_config = ConfigDict(extra="ignore", from_attributes=True)
+
+    product_id: int = Field(..., description="Id of the linked product (MasterProductRecord.id)")
+    relation_type: Literal["REQUIRED_COMPONENT", "RECOMMENDED", "COLLECTION_PAIR"] = Field(
+        ...,
+        description=(
+            "'REQUIRED_COMPONENT' — needed to install or use the product (e.g. a siphon for a sink), "
+            "'RECOMMENDED' — goes well with it, 'COLLECTION_PAIR' — item of the same collection"
+        ),
+    )
+
+
 class MasterProductRecord(BaseModel):
     """Master product record as exported by inventory for storefronts."""
 
@@ -149,6 +164,13 @@ class MasterProductRecord(BaseModel):
     translations: dict[str, MasterProductTranslation] = Field(
         default_factory=dict,
         description="Product text translations keyed by language code, currently only 'kk' (since 1.6.0)",
+    )
+    related: list[MasterProductRelation] = Field(
+        default_factory=list,
+        description=(
+            "Linked products in the order the manager set them; the linked product may be absent "
+            "from the export (out of stock, not public) (since 1.8.0)"
+        ),
     )
 
 

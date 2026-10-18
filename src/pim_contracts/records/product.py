@@ -25,6 +25,13 @@ class MasterCharacteristicTranslation(BaseModel):
             "None — value is not translated, storefront shows the Russian one"
         ),
     )
+    values: list[str] | None = Field(
+        default=None,
+        description=(
+            "Translated options of a multi-select attribute, same order and count as "
+            "MasterCharacteristicRecord.values; None for other attribute types (since 1.10.0)"
+        ),
+    )
     unit: str | None = Field(default=None, description="Translated unit of measurement")
     status: Literal["machine", "reviewed"] = Field(
         ...,
@@ -46,6 +53,13 @@ class MasterCharacteristicRecord(BaseModel):
 
     name: str = Field(..., description="Characteristic name")
     value: str = Field(..., description="Characteristic value")
+    values: list[str] | None = Field(
+        default=None,
+        description=(
+            "Separate options of a multi-select attribute; filled only for multi-select, "
+            "value stays the options joined with ', ' (since 1.10.0)"
+        ),
+    )
     code: str | None = Field(
         default=None,
         description="Stable attribute code from the PIM dictionary, e.g. 'width', 'color' (since 1.4.0)",

@@ -324,3 +324,32 @@ def test_characteristic_highlight_bounds():
     for bad in (0, 5, -1):
         with pytest.raises(ValidationError):
             MasterCharacteristicRecord(name="a", value="b", highlight=bad)
+
+
+def test_payload_1_9_0_without_values_is_valid():
+    """Payload формата 1.9.0 (характеристика и перевод без values) остаётся валидным."""
+    ch = MasterCharacteristicRecord.model_validate(
+        {
+            "name": "Функции",
+            "value": "Антивандальная, Термостат",
+            "translations": {"kk": {"value": "Вандалға қарсы, Термостат", "status": "machine"}},
+        }
+    )
+    assert ch.values is None
+    assert ch.translations["kk"].values is None
+
+
+def test_characteristic_values_roundtrip():
+    ch = MasterCharacteristicRecord.model_validate(
+        {
+            "name": "Функции",
+            "value": "Антивандальная, Термостат",
+            "values": ["Антивандальная", "Термостат"],
+            "translations": {
+                "kk": {"values": ["Вандалға қарсы", "Термостат"], "status": "reviewed"},
+            },
+        }
+    )
+    restored = MasterCharacteristicRecord.model_validate_json(ch.model_dump_json())
+    assert restored.values == ["Антивандальная", "Термостат"]
+    assert restored.translations["kk"].values == ["Вандалға қарсы", "Термостат"]

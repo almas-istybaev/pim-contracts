@@ -7,6 +7,7 @@ from pim_contracts.records.product import (
     MasterCharacteristicRecord,
     MasterCharacteristicTranslation,
     MasterProductRecord,
+    MasterProductRelation,
     MasterProductTranslation,
 )
 
@@ -16,5 +17,6 @@ __all__ = [
     "MasterCharacteristicRecord",
     "MasterCharacteristicTranslation",
     "MasterProductRecord",
+    "MasterProductRelation",
     "MasterProductTranslation",
 ]

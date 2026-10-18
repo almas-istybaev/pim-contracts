@@ -292,3 +292,35 @@ def test_relation_type_rejects_unknown_value():
 
     with pytest.raises(ValidationError):
         MasterProductRelation(product_id=1, relation_type="ACCESSORY")
+
+
+def test_payload_1_8_0_without_section_and_highlight_is_valid():
+    """Payload формата 1.8.0 (характеристика без section/highlight) остаётся валидным."""
+    ch = MasterCharacteristicRecord.model_validate({"name": "Ширина", "value": "30", "group": "base"})
+    assert ch.section is None
+    assert ch.highlight is None
+
+
+def test_characteristic_section_and_highlight_roundtrip():
+    for section in ("dimensions", "material", "installation", "features"):
+        for highlight in (1, 4):
+            ch = MasterCharacteristicRecord(name="a", value="b", section=section, highlight=highlight)
+            restored = MasterCharacteristicRecord.model_validate_json(ch.model_dump_json())
+            assert (restored.section, restored.highlight) == (section, highlight)
+
+
+def test_characteristic_section_rejects_unknown_value():
+    import pytest
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):
+        MasterCharacteristicRecord(name="a", value="b", section="other")
+
+
+def test_characteristic_highlight_bounds():
+    import pytest
+    from pydantic import ValidationError
+
+    for bad in (0, 5, -1):
+        with pytest.raises(ValidationError):
+            MasterCharacteristicRecord(name="a", value="b", highlight=bad)

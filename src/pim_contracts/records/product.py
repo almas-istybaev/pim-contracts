@@ -66,6 +66,19 @@ class MasterCharacteristicRecord(BaseModel):
         default_factory=dict,
         description="Characteristic translations keyed by language code, currently only 'kk' (since 1.7.0)",
     )
+    section: Literal["dimensions", "material", "installation", "features"] | None = Field(
+        default=None,
+        description=(
+            "Storefront product page section: 'dimensions', 'material' (material and color), "
+            "'installation' (installation and connection) or 'features' (since 1.9.0)"
+        ),
+    )
+    highlight: int | None = Field(
+        default=None,
+        ge=1,
+        le=4,
+        description="Position (1-4) in the key facts shown under the price; None means not a key fact (since 1.9.0)",
+    )
 
 
 class MasterProductTranslation(BaseModel):

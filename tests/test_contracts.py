@@ -137,3 +137,24 @@ def test_package_version_matches_pyproject():
 
     pyproject = tomllib.loads((Path(__file__).parents[1] / "pyproject.toml").read_text())
     assert pim_contracts.__version__ == pyproject["project"]["version"]
+
+
+def test_literal_types_exported_and_used_by_records():
+    """Именованные Literal-типы доступны потребителям и совпадают с полями записей (с 1.12.0)."""
+    from typing import get_args
+
+    from pim_contracts import (
+        AttributeGroup,
+        AttributeSection,
+        MasterCharacteristicRecord,
+        MasterProductRelation,
+        MasterProductTranslation,
+        RelationType,
+        TranslationStatus,
+    )
+
+    assert get_args(TranslationStatus) == ("machine", "reviewed")
+    assert MasterProductTranslation.model_fields["status"].annotation == TranslationStatus
+    assert MasterProductRelation.model_fields["relation_type"].annotation == RelationType
+    assert MasterCharacteristicRecord.model_fields["group"].annotation == AttributeGroup | None
+    assert MasterCharacteristicRecord.model_fields["section"].annotation == AttributeSection | None

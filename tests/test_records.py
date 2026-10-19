@@ -31,9 +31,19 @@ def test_product_optional_fields_default_to_none():
     for field in (
         "mpn", "gpc_id", "brand", "shipping_weight", "shipping_length",
         "shipping_width", "shipping_height", "category", "description",
-        "cost_price", "category_slug",
+        "cost_price", "category_slug", "price_updated_at",
     ):
         assert getattr(rec, field) is None, field
+
+
+def test_product_price_updated_at_parses_iso():
+    rec = MasterProductRecord.model_validate(
+        {"id": 5, "name": "Ванна", "price": 1.0, "stock": "в наличии",
+         "price_updated_at": "2026-10-19T08:30:00Z"}
+    )
+    assert rec.price_updated_at is not None
+    assert rec.price_updated_at.utcoffset() is not None
+    assert rec.model_dump(mode="json")["price_updated_at"].startswith("2026-10-19T08:30:00")
 
 
 def test_product_characteristics_parse_nested():

@@ -6,6 +6,7 @@ Mirrors the export payload of the santeh24 integration:
     (Santeh24ProductItem, Santeh24CategoryItem, Santeh24Characteristic)
 Consumers: santeh24.kz frontend/src/lib/pim.ts (PIMProduct, PIMCategory).
 """
+from datetime import datetime
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -181,6 +182,13 @@ class MasterProductRecord(BaseModel):
         description="Key-value characteristics",
     )
     price: float = Field(..., description="Retail price")
+    price_updated_at: datetime | None = Field(
+        default=None,
+        description=(
+            "UTC time since which the current retail price is in effect; set by PIM whenever the price "
+            "changes, null when unknown (since 1.11.0)"
+        ),
+    )
     cost_price: float | None = Field(default=None, description="Cost price")
     stock: str = Field(..., description="Stock status label, e.g. 'в наличии' or 'нету'")
     stock_quantity: float = Field(

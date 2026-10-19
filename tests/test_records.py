@@ -363,3 +363,19 @@ def test_characteristic_values_roundtrip():
     restored = MasterCharacteristicRecord.model_validate_json(ch.model_dump_json())
     assert restored.values == ["Антивандальная", "Термостат"]
     assert restored.translations["kk"].values == ["Вандалға қарсы", "Термостат"]
+
+
+def test_category_payload_1_12_0_without_previous_slugs_is_valid():
+    """Payload формата 1.12.0 (без previous_slugs) остаётся валидным."""
+    cat = MasterCategoryRecord.model_validate({"id": 3, "name": "Ванны", "slug": "vanny"})
+    assert cat.previous_slugs == []
+
+
+def test_category_previous_slugs_roundtrip():
+    cat = MasterCategoryRecord(
+        id=4, name="Смесители", slug="smesiteli-dlya-vannoy", previous_slugs=["smesiteli", "smesiteli-old"]
+    )
+    assert cat.model_dump()["previous_slugs"] == ["smesiteli", "smesiteli-old"]
+    restored = MasterCategoryRecord.model_validate_json(cat.model_dump_json())
+    assert restored == cat
+    assert restored.previous_slugs == ["smesiteli", "smesiteli-old"]

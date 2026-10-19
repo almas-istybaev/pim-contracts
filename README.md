@@ -11,7 +11,7 @@ pip install -e /path/to/pim-contracts
 
 ### В Docker / CI / Production:
 ```bash
-pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.12.0"
+pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.13.0"
 ```
 
 ## Правила эволюции схем (SemVer):
@@ -22,6 +22,10 @@ pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.12.0"
 ## Что нового
 
 История 1.5–1.11 — в сообщениях тегов (`git tag -n1`).
+
+### 1.13.0
+- `MasterCategoryRecord.previous_slugs: list[str]` (по умолчанию `[]`) — прошлые slug категории; витрина отвечает на них 301 на текущий `slug`. По образцу `MasterProductRecord.previous_slugs` (1.5.0).
+- Уточнено описание `MasterCategoryRecord.slug`: при переименовании не меняется, админ может сменить вручную.
 
 ### 1.12.0
 - Именованные типы `TranslationStatus`, `AttributeGroup`, `AttributeSection`, `RelationType` экспортируются из `pim_contracts`: потребители импортируют их вместо собственных `Literal`. Значения не изменились.

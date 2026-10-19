@@ -250,7 +250,14 @@ class MasterCategoryRecord(BaseModel):
     name: str = Field(..., description="Category name")
     slug: str | None = Field(
         default=None,
-        description="Stable URL slug owned by PIM; does not change on rename (since 1.3.0)",
+        description=(
+            "URL slug owned by PIM (since 1.3.0); it is not changed when the category is renamed, "
+            "the admin may change it manually, former values are kept in previous_slugs (since 1.13.0)"
+        ),
+    )
+    previous_slugs: list[str] = Field(
+        default_factory=list,
+        description="Former slugs of this category; storefront answers them with 301 to the current slug (since 1.13.0)",
     )
     parent_id: int | None = Field(default=None, description="Parent category ID")
     description: str | None = Field(default=None, description="Category description")

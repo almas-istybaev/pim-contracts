@@ -11,6 +11,18 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+TranslationStatus = Literal["machine", "reviewed"]
+"""Translation origin: machine-translated or reviewed by a content manager (since 1.12.0)."""
+
+AttributeGroup = Literal["base", "category"]
+"""Attribute scope: shared base attribute or category-specific one (since 1.12.0)."""
+
+AttributeSection = Literal["dimensions", "material", "installation", "features"]
+"""Storefront section a characteristic is grouped under (since 1.12.0)."""
+
+RelationType = Literal["REQUIRED_COMPONENT", "RECOMMENDED", "COLLECTION_PAIR"]
+"""Kind of product-to-product relation (since 1.12.0)."""
+
 
 class MasterCharacteristicTranslation(BaseModel):
     """Translation of one product characteristic into one storefront language (since 1.7.0)."""
@@ -34,7 +46,7 @@ class MasterCharacteristicTranslation(BaseModel):
         ),
     )
     unit: str | None = Field(default=None, description="Translated unit of measurement")
-    status: Literal["machine", "reviewed"] = Field(
+    status: TranslationStatus = Field(
         ...,
         description=(
             "'machine' — draft translated by Claude, 'reviewed' — checked by a human; "
@@ -65,7 +77,7 @@ class MasterCharacteristicRecord(BaseModel):
         default=None,
         description="Stable attribute code from the PIM dictionary, e.g. 'width', 'color' (since 1.4.0)",
     )
-    group: Literal["base", "category"] | None = Field(
+    group: AttributeGroup | None = Field(
         default=None,
         description="Storefront display group: 'base' (common attributes) or 'category' (category-specific) (since 1.4.0)",
     )
@@ -81,7 +93,7 @@ class MasterCharacteristicRecord(BaseModel):
         default_factory=dict,
         description="Characteristic translations keyed by language code, currently only 'kk' (since 1.7.0)",
     )
-    section: Literal["dimensions", "material", "installation", "features"] | None = Field(
+    section: AttributeSection | None = Field(
         default=None,
         description=(
             "Storefront product page section: 'dimensions', 'material' (material and color), "
@@ -108,7 +120,7 @@ class MasterProductTranslation(BaseModel):
         default=None,
         description="Translated SEO meta description",
     )
-    status: Literal["machine", "reviewed"] = Field(
+    status: TranslationStatus = Field(
         ...,
         description="'machine' — draft translated by Claude, 'reviewed' — checked by a human",
     )
@@ -124,7 +136,7 @@ class MasterProductRelation(BaseModel):
     model_config = ConfigDict(extra="ignore", from_attributes=True)
 
     product_id: int = Field(..., description="Id of the linked product (MasterProductRecord.id)")
-    relation_type: Literal["REQUIRED_COMPONENT", "RECOMMENDED", "COLLECTION_PAIR"] = Field(
+    relation_type: RelationType = Field(
         ...,
         description=(
             "'REQUIRED_COMPONENT' — needed to install or use the product (e.g. a siphon for a sink), "
@@ -189,7 +201,10 @@ class MasterProductRecord(BaseModel):
             "changes, null when unknown (since 1.11.0)"
         ),
     )
-    cost_price: float | None = Field(default=None, description="Cost price")
+    cost_price: float | None = Field(
+        default=None,
+        description="Cost price. Not published by PLP; kept for v1.x compatibility",
+    )
     stock: str = Field(..., description="Stock status label, e.g. 'в наличии' or 'нету'")
     stock_quantity: float = Field(
         default=0.0,
@@ -216,7 +231,7 @@ class MasterCategoryTranslation(BaseModel):
 
     name: str | None = Field(default=None, description="Translated category name")
     description: str | None = Field(default=None, description="Translated category description")
-    status: Literal["machine", "reviewed"] = Field(
+    status: TranslationStatus = Field(
         ...,
         description="'machine' — draft translated by Claude, 'reviewed' — checked by a human",
     )

@@ -21,6 +21,8 @@ from pim_contracts.events import (
     ProductStockUpdateEvent,
 )
 from pim_contracts.records import (
+    AttributeGroup,
+    AttributeSection,
     MasterCategoryRecord,
     MasterCategoryTranslation,
     MasterCharacteristicRecord,
@@ -28,6 +30,8 @@ from pim_contracts.records import (
     MasterProductRecord,
     MasterProductRelation,
     MasterProductTranslation,
+    RelationType,
+    TranslationStatus,
 )
 
 # Версия пакета (pyproject.toml); SCHEMA_VERSION — отдельно, версия формата событий.
@@ -44,6 +48,8 @@ __all__ = [
     "ROUTING_KEY_FEED_PRICE_UPDATE",
     "ROUTING_KEY_FEED_STOCK_UPDATE",
     "SCHEMA_VERSION",
+    "AttributeGroup",
+    "AttributeSection",
     "BaseEvent",
     "CanonicalProductFeedEvent",
     "Currency",
@@ -57,5 +63,7 @@ __all__ = [
     "MasterProductTranslation",
     "ProductPriceUpdateEvent",
     "ProductStockUpdateEvent",
+    "RelationType",
     "SourceType",
+    "TranslationStatus",
 ]

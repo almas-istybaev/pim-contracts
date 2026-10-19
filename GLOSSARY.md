@@ -12,8 +12,8 @@
 - **AMQP Topology**: Структура точек обмена (exchanges), очередей (queues) и ключей маршрутизации (routing keys) RabbitMQ для межсервисного асинхронного взаимодействия.
 - **Canonical Product Feed Event (`CanonicalProductFeedEvent`)**: Единое каноническое событие пакета товаров из фида поставщика.
 - **Stock Update Event (`ProductStockUpdateEvent`)**: Событие изменения складских остатков и статуса наличия товара.
-- **Price Update Event (`ProductPriceUpdateEvent`)**: Событие изменения ценовых предложений (розничных и оптовых).
-- **SourceType**: Перечисление источников входящих данных (`UNKNOWN`, `TOPMAX_API`, `EXCEL_FEED` и др.).
+- **Price Update Event (`ProductPriceUpdateEvent`)**: Событие изменения ценовых предложений (розничных и оптовых). PLP его не публикует, оставлено для совместимости v1.x.
+- **SourceType**: Перечисление источников входящих данных (`MOYSKLAD_API`, `TOPMAX_API`, `MULTI_SOURCE_SCRAPER`, `TELEGRAM_EXCEL`, `MANUAL_IMPORT`, `UNKNOWN`).
 - **Currency**: Поддерживаемые валюты (`KZT`, `RUB`, `USD`, `EUR`).
 
 ---

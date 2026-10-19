@@ -15,5 +15,7 @@ ROUTING_KEY_FEED_CANONICAL = "pim.feed.canonical"
 ROUTING_KEY_FEED_STOCK_UPDATE = "pim.feed.stock"
 ROUTING_KEY_FEED_PRICE_UPDATE = "pim.feed.price"
 
-# Contract Versioning
+# Event wire-format version, written into every BaseEvent.schema_version.
+# Independent of the package version (pyproject.toml / __version__): bump only
+# when the event payload format changes incompatibly.
 SCHEMA_VERSION = "1.0.0"

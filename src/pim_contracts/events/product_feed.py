@@ -54,6 +54,8 @@ class ProductStockUpdateEvent(BaseEvent):
 class ProductPriceUpdateEvent(BaseEvent):
     """
     Lightweight event emitted when only price has changed.
+
+    Not published by PLP; kept for v1.x compatibility (inventory still consumes it).
     """
     supplier_id: str = Field(..., min_length=1)
     supplier_sku: str = Field(..., min_length=1)

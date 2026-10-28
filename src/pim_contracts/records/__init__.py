@@ -14,6 +14,7 @@ from pim_contracts.records.product import (
     RelationType,
     TranslationStatus,
 )
+from pim_contracts.records.partner import PartnerOfferRecord, PartnerProductRecord
 
 __all__ = [
     "AttributeGroup",
@@ -25,6 +26,8 @@ __all__ = [
     "MasterProductRecord",
     "MasterProductRelation",
     "MasterProductTranslation",
+    "PartnerOfferRecord",
+    "PartnerProductRecord",
     "RelationType",
     "TranslationStatus",
 ]

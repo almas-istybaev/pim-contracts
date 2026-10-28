@@ -11,7 +11,7 @@ pip install -e /path/to/pim-contracts
 
 ### В Docker / CI / Production:
 ```bash
-pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.13.0"
+pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.14.0"
 ```
 
 ## Правила эволюции схем (SemVer):
@@ -22,6 +22,11 @@ pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.13.0"
 ## Что нового
 
 История 1.5–1.11 — в сообщениях тегов (`git tag -n1`).
+
+### 1.14.0
+Новые DTO Partner API (inventory отдаёт внешним магазинам-партнёрам, первый — adilux.kz); существующие схемы не изменились:
+- `PartnerProductRecord` — контент карточки: поля `MasterProductRecord` в том же порядке без `price`, `price_updated_at`, `cost_price`, `stock`, `stock_quantity`.
+- `PartnerOfferRecord` — наше оптовое предложение: `product_id`, `wholesale_price` (ручная оптовая цена, `null` если не задана), `currency` (`KZT`), `available_qty` (≥0), `lead_time_days`, `updated_at`.
 
 ### 1.13.0
 - `MasterCategoryRecord.previous_slugs: list[str]` (по умолчанию `[]`) — прошлые slug категории; витрина отвечает на них 301 на текущий `slug`. По образцу `MasterProductRecord.previous_slugs` (1.5.0).

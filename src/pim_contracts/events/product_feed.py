@@ -1,3 +1,4 @@
+from datetime import datetime
 from decimal import Decimal
 from typing import Any
 
@@ -23,6 +24,22 @@ class CanonicalProductFeedEvent(BaseEvent):
     )
 
     raw_price: Decimal = Field(default=Decimal("0.0"), ge=0, description="Latest price parsed from supplier list or API")
+    supplier_retail_price: Decimal | None = Field(
+        default=None,
+        ge=0,
+        description=(
+            "Supplier's end-customer retail price (e.g. from the supplier's website). "
+            "Not the purchase price and not raw_price. None means unknown, not 'reset'"
+        ),
+    )
+    supplier_retail_source: str | None = Field(
+        default=None,
+        description="Where supplier_retail_price was observed, e.g. 'site', 'kaspi_feed'",
+    )
+    supplier_retail_observed_at: datetime | None = Field(
+        default=None,
+        description="UTC time supplier_retail_price was observed; consumers drop stale values by it",
+    )
     stock: int = Field(default=0, ge=0, description="Available quantity for sale: max(physical_stock - reserve, 0)")
     currency: Currency = Field(default=Currency.KZT, description="Currency ISO code")
 
@@ -45,6 +62,22 @@ class ProductStockUpdateEvent(BaseEvent):
     supplier_sku: str = Field(..., min_length=1)
     normalized_mpn: str | None = Field(default=None)
     raw_price: Decimal = Field(default=Decimal("0.0"), ge=0)
+    supplier_retail_price: Decimal | None = Field(
+        default=None,
+        ge=0,
+        description=(
+            "Supplier's end-customer retail price (e.g. from the supplier's website). "
+            "Not the purchase price and not raw_price. None means unknown, not 'reset'"
+        ),
+    )
+    supplier_retail_source: str | None = Field(
+        default=None,
+        description="Where supplier_retail_price was observed, e.g. 'site', 'kaspi_feed'",
+    )
+    supplier_retail_observed_at: datetime | None = Field(
+        default=None,
+        description="UTC time supplier_retail_price was observed; consumers drop stale values by it",
+    )
     stock: int = Field(default=0, ge=0)
     currency: Currency = Field(default=Currency.KZT)
     payload_hash: str | None = Field(default=None)

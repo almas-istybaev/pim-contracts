@@ -1,6 +1,10 @@
 import json
 import uuid
+from datetime import datetime, timezone
 from decimal import Decimal
+
+import pytest
+from pydantic import ValidationError
 
 from pim_contracts import (
     PIM_EVENTS_EXCHANGE,
@@ -104,6 +108,42 @@ def test_stock_update_event():
     assert event.reason == "absent_from_sitemap"
     json_data = json.loads(event.model_dump_json())
     assert json_data["reason"] == "absent_from_sitemap"
+
+
+@pytest.mark.parametrize("event_cls", [CanonicalProductFeedEvent, ProductStockUpdateEvent])
+def test_supplier_retail_fields_roundtrip(event_cls):
+    """1.15.0: розница поставщика с его сайта — отдельно от raw_price."""
+    kwargs = {"supplier_id": "gloria", "supplier_sku": "G-1", "raw_price": Decimal("40000.00")}
+    if event_cls is CanonicalProductFeedEvent:
+        kwargs["name"] = "Смеситель"
+    observed = datetime(2026, 10, 29, 6, 30, tzinfo=timezone.utc)
+    event = event_cls(
+        **kwargs,
+        supplier_retail_price=Decimal("52990.00"),
+        supplier_retail_source="site",
+        supplier_retail_observed_at=observed,
+    )
+    parsed = event_cls.model_validate_json(event.model_dump_json())
+    assert parsed.supplier_retail_price == Decimal("52990.00")
+    assert parsed.raw_price == Decimal("40000.00")
+    assert parsed.supplier_retail_source == "site"
+    assert parsed.supplier_retail_observed_at == observed
+
+    with pytest.raises(ValidationError):
+        event_cls(**kwargs, supplier_retail_price=Decimal("-1"))
+
+
+@pytest.mark.parametrize("event_cls", [CanonicalProductFeedEvent, ProductStockUpdateEvent])
+def test_supplier_retail_fields_absent_in_old_payload(event_cls):
+    """Payload ≤1.14.0 без новых полей валиден, поля = None (неизвестно)."""
+    payload = {"supplier_id": "gloria", "supplier_sku": "G-1", "raw_price": "40000.00"}
+    if event_cls is CanonicalProductFeedEvent:
+        payload["name"] = "Смеситель"
+    parsed = event_cls.model_validate_json(json.dumps(payload))
+    assert parsed.supplier_retail_price is None
+    assert parsed.supplier_retail_source is None
+    assert parsed.supplier_retail_observed_at is None
+    assert json.loads(parsed.model_dump_json())["supplier_retail_price"] is None
 
 
 def test_price_update_event():

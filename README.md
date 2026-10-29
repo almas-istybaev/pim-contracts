@@ -11,7 +11,7 @@ pip install -e /path/to/pim-contracts
 
 ### В Docker / CI / Production:
 ```bash
-pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.14.0"
+pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.15.0"
 ```
 
 ## Правила эволюции схем (SemVer):
@@ -22,6 +22,12 @@ pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.14.0"
 ## Что нового
 
 История 1.5–1.11 — в сообщениях тегов (`git tag -n1`).
+
+### 1.15.0
+Розница поставщика для конечного покупателя (с его сайта) в событиях фида — новые опциональные поля в `CanonicalProductFeedEvent` и `ProductStockUpdateEvent` (`ProductPriceUpdateEvent` не изменился):
+- `supplier_retail_price: Decimal | None` (≥0) — не закупка и не `raw_price`; `null` = неизвестно, а не «сбросить».
+- `supplier_retail_source: str | None` — откуда цена (`site`, `kaspi_feed`, …).
+- `supplier_retail_observed_at: datetime | None` — UTC-время наблюдения; consumer отбрасывает устаревшие значения.
 
 ### 1.14.0
 Новые DTO Partner API (inventory отдаёт внешним магазинам-партнёрам, первый — adilux.kz); существующие схемы не изменились:

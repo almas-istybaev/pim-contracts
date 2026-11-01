@@ -44,6 +44,10 @@ class PartnerProductRecord(BaseModel):
         default_factory=list,
         description="Former slugs of this product; a partner may redirect them to the current slug",
     )
+    merged_ids: list[int] = Field(
+        default_factory=list,
+        description="IDs of duplicate products merged into this one; a partner may redirect them to this product",
+    )
     mpn: str | None = Field(default=None, description="Manufacturer part number")
     gpc_id: int | None = Field(default=None, description="Google product category ID")
     brand: str | None = Field(default=None, description="Brand name")

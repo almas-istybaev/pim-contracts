@@ -168,6 +168,24 @@ def test_product_slug_fields_roundtrip():
     assert restored.previous_slugs == ["smesitel", "smesitel-old"]
 
 
+def test_payload_1_15_0_without_merged_ids_is_valid():
+    """Payload формата 1.15.0 (без merged_ids) остаётся валидным."""
+    rec = MasterProductRecord.model_validate(
+        {"id": 12, "name": "Смеситель", "price": 1.0, "stock": "в наличии", "slug": "smesitel"}
+    )
+    assert rec.merged_ids == []
+
+
+def test_product_merged_ids_roundtrip():
+    rec = MasterProductRecord(
+        id=13, name="Смеситель", price=1.0, stock="в наличии",
+        slug="smesitel-grohe", previous_slugs=["smesitel-grohe-2"], merged_ids=[101, 102],
+    )
+    restored = MasterProductRecord.model_validate_json(rec.model_dump_json())
+    assert restored == rec
+    assert restored.merged_ids == [101, 102]
+
+
 def test_payload_1_5_0_without_translations_is_valid():
     """Payload формата 1.5.0 (без translations) остаётся валидным."""
     rec = MasterProductRecord.model_validate(

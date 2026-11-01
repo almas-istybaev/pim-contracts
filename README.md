@@ -23,6 +23,11 @@ pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.15.0"
 
 История 1.5–1.11 — в сообщениях тегов (`git tag -n1`).
 
+### 1.16.0
+Слияние дублей товаров — новое опциональное поле в `MasterProductRecord` и `PartnerProductRecord` (после `previous_slugs`):
+- `merged_ids: list[int]` (по умолчанию `[]`) — id дублей, слитых в эту карточку; витрина отвечает 301 с URL по id дубля на эту карточку.
+- Slug-и дубля (его `slug` и `previous_slugs`) PIM дописывает в `previous_slugs` оставшейся карточки — 301 по ним витрина уже делает (1.5.0).
+
 ### 1.15.0
 Розница поставщика для конечного покупателя (с его сайта) в событиях фида — новые опциональные поля в `CanonicalProductFeedEvent` и `ProductStockUpdateEvent` (`ProductPriceUpdateEvent` не изменился):
 - `supplier_retail_price: Decimal | None` (≥0) — не закупка и не `raw_price`; `null` = неизвестно, а не «сбросить».

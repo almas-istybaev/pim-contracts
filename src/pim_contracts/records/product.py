@@ -145,6 +145,60 @@ class MasterProductRelation(BaseModel):
     )
 
 
+class MasterProductPromoTranslation(BaseModel):
+    """Translation of promo texts into one storefront language (since 1.17.0)."""
+
+    model_config = ConfigDict(extra="ignore", from_attributes=True)
+
+    name: str | None = Field(default=None, description="Translated campaign name")
+    note: str | None = Field(default=None, description="Translated customer-facing note")
+
+
+class MasterProductPromo(BaseModel):
+    """
+    Active storefront promo of a product (since 1.17.0).
+
+    Present only while the promo is active. MasterProductRecord.price is then the promo
+    price the customer pays; compare_at_price is the regular retail price shown struck through.
+    Retail data: not exposed to partners.
+    """
+
+    model_config = ConfigDict(extra="ignore", from_attributes=True)
+
+    type: str = Field(
+        ...,
+        description=(
+            "'sale' — dated promo, single product or part of a named campaign (name/slug set); "
+            "'clearance' — markdown of a damaged or last unit, lasts until sold out. "
+            "Consumers must treat unknown values as a generic promo"
+        ),
+    )
+    compare_at_price: float = Field(
+        ...,
+        description="Regular retail price before the promo, always greater than the record price",
+    )
+    until: datetime | None = Field(
+        default=None,
+        description=(
+            "UTC time when the promo ends; null for open-ended promos (clearance). After it the "
+            "storefront must show the regular price until the next sync"
+        ),
+    )
+    name: str | None = Field(default=None, description="Campaign name shown to the customer, e.g. 'Наурыз'; null for a single-product promo")
+    slug: str | None = Field(
+        default=None,
+        description="URL-safe campaign slug for grouping products on the storefront promo page",
+    )
+    note: str | None = Field(
+        default=None,
+        description="Short customer-facing note, e.g. clearance reason 'повреждена упаковка'",
+    )
+    translations: dict[str, MasterProductPromoTranslation] = Field(
+        default_factory=dict,
+        description="Promo text translations keyed by language code, currently only 'kk'",
+    )
+
+
 class MasterProductRecord(BaseModel):
     """Master product record as exported by inventory for storefronts."""
 
@@ -228,6 +282,10 @@ class MasterProductRecord(BaseModel):
             "Linked products in the order the manager set them; the linked product may be absent "
             "from the export (out of stock, not public) (since 1.8.0)"
         ),
+    )
+    promo: MasterProductPromo | None = Field(
+        default=None,
+        description="Active promo; null when the product is sold at the regular price (since 1.17.0)",
     )
 
 

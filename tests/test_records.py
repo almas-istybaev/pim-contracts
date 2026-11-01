@@ -2,6 +2,7 @@ from pim_contracts import (
     MasterCategoryRecord,
     MasterCategoryTranslation,
     MasterCharacteristicTranslation,
+    MasterProductPromo,
     MasterProductRecord,
     MasterProductRelation,
     MasterProductTranslation,
@@ -397,3 +398,40 @@ def test_category_previous_slugs_roundtrip():
     restored = MasterCategoryRecord.model_validate_json(cat.model_dump_json())
     assert restored == cat
     assert restored.previous_slugs == ["smesiteli", "smesiteli-old"]
+
+
+def test_payload_1_16_0_without_promo_is_valid():
+    """Payload формата 1.16.0 (без promo) остаётся валидным."""
+    rec = MasterProductRecord.model_validate(
+        {"id": 14, "name": "Смеситель", "price": 1.0, "stock": "в наличии"}
+    )
+    assert rec.promo is None
+
+
+def test_product_promo_roundtrip():
+    rec = MasterProductRecord.model_validate({
+        "id": 15, "name": "Смеситель", "price": 8500.0, "stock": "в наличии",
+        "promo": {
+            "type": "sale", "compare_at_price": 10000.0, "until": "2027-03-25T18:59:59Z",
+            "name": "Наурыз", "slug": "nauryz-2027",
+            "translations": {"kk": {"name": "Наурыз"}},
+        },
+    })
+    restored = MasterProductRecord.model_validate_json(rec.model_dump_json())
+    assert restored == rec
+    assert restored.promo is not None
+    assert restored.promo.compare_at_price == 10000.0
+    assert restored.promo.until is not None and restored.promo.until.utcoffset() is not None
+    assert restored.promo.translations["kk"].name == "Наурыз"
+
+
+def test_promo_clearance_defaults():
+    promo = MasterProductPromo(type="clearance", compare_at_price=5000.0, note="повреждена упаковка")
+    assert promo.until is None
+    assert promo.name is None and promo.slug is None
+    assert promo.translations == {}
+
+
+def test_promo_type_accepts_unknown_value():
+    """Новые виды акций не ломают старых потребителей."""
+    assert MasterProductPromo(type="flash", compare_at_price=2.0).type == "flash"

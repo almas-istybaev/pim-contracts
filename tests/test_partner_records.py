@@ -26,7 +26,7 @@ def test_partner_product_fields_match_master_without_retail():
 
 def test_master_product_field_order_unchanged():
     assert list(MasterProductRecord.model_fields) == [
-        "id", "name", "slug", "previous_slugs", "mpn", "gpc_id", "brand",
+        "id", "name", "slug", "previous_slugs", "merged_ids", "mpn", "gpc_id", "brand",
         "shipping_weight", "shipping_length", "shipping_width", "shipping_height",
         "shipping_dimension_unit", "shipping_weight_unit", "category", "category_slug",
         "description", "seo_title", "seo_description", "characteristics",

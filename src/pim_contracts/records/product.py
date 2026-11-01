@@ -160,6 +160,13 @@ class MasterProductRecord(BaseModel):
         default_factory=list,
         description="Former slugs of this product; storefront answers them with 301 to the current slug (since 1.5.0)",
     )
+    merged_ids: list[int] = Field(
+        default_factory=list,
+        description=(
+            "IDs of duplicate products merged into this one; storefront answers their id URLs with 301 to this "
+            "product. Slugs of merged duplicates are added to previous_slugs (since 1.16.0)"
+        ),
+    )
     mpn: str | None = Field(default=None, description="Manufacturer part number")
     gpc_id: int | None = Field(default=None, description="Google product category ID")
     brand: str | None = Field(default=None, description="Brand name")

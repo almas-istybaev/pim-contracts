@@ -23,6 +23,10 @@ pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.15.0"
 
 История 1.5–1.11 — в сообщениях тегов (`git tag -n1`).
 
+### 1.18.0
+JSON Schema витринных записей (`MasterProductRecord`, `MasterCategoryRecord`, режим serialization) публикуется в каждом теге: `schemas/storefront.schema.json`, ключ `x-pim-contracts-version` — версия пакета. Публичный URL: `https://raw.githubusercontent.com/almas-istybaev/pim-contracts/vX.Y.Z/schemas/storefront.schema.json`. Схемы DTO не менялись.
+- После правки моделей или версии: `.venv/bin/python scripts/storefront_schema.py`; `tests/test_storefront_schema.py` падает, если файл устарел.
+
 ### 1.16.0
 Слияние дублей товаров — новое опциональное поле в `MasterProductRecord` и `PartnerProductRecord` (после `previous_slugs`):
 - `merged_ids: list[int]` (по умолчанию `[]`) — id дублей, слитых в эту карточку; витрина отвечает 301 с URL по id дубля на эту карточку.

@@ -1,0 +1,900 @@
+{
+  "$defs": {
+    "MasterCategoryRecord": {
+      "description": "Category (taxonomy node) as exported by inventory for storefronts.",
+      "properties": {
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Category description",
+          "title": "Description"
+        },
+        "id": {
+          "description": "Category primary key",
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "description": "Category name",
+          "title": "Name",
+          "type": "string"
+        },
+        "parent_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Parent category ID",
+          "title": "Parent Id"
+        },
+        "photo": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Public photo URL",
+          "title": "Photo"
+        },
+        "previous_slugs": {
+          "description": "Former slugs of this category; storefront answers them with 301 to the current slug (since 1.13.0)",
+          "items": {
+            "type": "string"
+          },
+          "title": "Previous Slugs",
+          "type": "array"
+        },
+        "slug": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "URL slug owned by PIM (since 1.3.0); it is not changed when the category is renamed, the admin may change it manually, former values are kept in previous_slugs (since 1.13.0)",
+          "title": "Slug"
+        },
+        "translations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/MasterCategoryTranslation"
+          },
+          "description": "Category text translations keyed by language code, currently only 'kk' (since 1.7.0)",
+          "title": "Translations",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "MasterCategoryRecord",
+      "type": "object"
+    },
+    "MasterCategoryTranslation": {
+      "description": "Translation of category texts into one storefront language (since 1.7.0).",
+      "properties": {
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Translated category description",
+          "title": "Description"
+        },
+        "is_outdated": {
+          "default": false,
+          "description": "True when the Russian source text changed after this translation was made",
+          "title": "Is Outdated",
+          "type": "boolean"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Translated category name",
+          "title": "Name"
+        },
+        "status": {
+          "description": "'machine' — draft translated by Claude, 'reviewed' — checked by a human",
+          "enum": [
+            "machine",
+            "reviewed"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "MasterCategoryTranslation",
+      "type": "object"
+    },
+    "MasterCharacteristicRecord": {
+      "description": "Key-value characteristic of a master product.",
+      "properties": {
+        "code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Stable attribute code from the PIM dictionary, e.g. 'width', 'color' (since 1.4.0)",
+          "title": "Code"
+        },
+        "group": {
+          "anyOf": [
+            {
+              "enum": [
+                "base",
+                "category"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Storefront display group: 'base' (common attributes) or 'category' (category-specific) (since 1.4.0)",
+          "title": "Group"
+        },
+        "highlight": {
+          "anyOf": [
+            {
+              "maximum": 4,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Position (1-4) in the key facts shown under the price; None means not a key fact (since 1.9.0)",
+          "title": "Highlight"
+        },
+        "name": {
+          "description": "Characteristic name",
+          "title": "Name",
+          "type": "string"
+        },
+        "numeric_value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Numeric form of the value for numeric attributes (since 1.4.0)",
+          "title": "Numeric Value"
+        },
+        "section": {
+          "anyOf": [
+            {
+              "enum": [
+                "dimensions",
+                "material",
+                "installation",
+                "features"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Storefront product page section: 'dimensions', 'material' (material and color), 'installation' (installation and connection) or 'features' (since 1.9.0)",
+          "title": "Section"
+        },
+        "translations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/MasterCharacteristicTranslation"
+          },
+          "description": "Characteristic translations keyed by language code, currently only 'kk' (since 1.7.0)",
+          "title": "Translations",
+          "type": "object"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Unit of measurement of the value, e.g. 'cm' (since 1.4.0)",
+          "title": "Unit"
+        },
+        "value": {
+          "description": "Characteristic value",
+          "title": "Value",
+          "type": "string"
+        },
+        "values": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Separate options of a multi-select attribute; filled only for multi-select, value stays the options joined with ', ' (since 1.10.0)",
+          "title": "Values"
+        }
+      },
+      "required": [
+        "name",
+        "value"
+      ],
+      "title": "MasterCharacteristicRecord",
+      "type": "object"
+    },
+    "MasterCharacteristicTranslation": {
+      "description": "Translation of one product characteristic into one storefront language (since 1.7.0).",
+      "properties": {
+        "is_outdated": {
+          "default": false,
+          "description": "True when the Russian source of any part (name, unit, value option) changed after translation",
+          "title": "Is Outdated",
+          "type": "boolean"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Translated characteristic name",
+          "title": "Name"
+        },
+        "status": {
+          "description": "'machine' — draft translated by Claude, 'reviewed' — checked by a human; 'reviewed' only when the name, the unit and every value option are reviewed",
+          "enum": [
+            "machine",
+            "reviewed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Translated unit of measurement",
+          "title": "Unit"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Translated value in the same format as MasterCharacteristicRecord.value: options joined with ', ', number with unit, 'Иә'/'Жоқ' for booleans; None — value is not translated, storefront shows the Russian one",
+          "title": "Value"
+        },
+        "values": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Translated options of a multi-select attribute, same order and count as MasterCharacteristicRecord.values; None for other attribute types (since 1.10.0)",
+          "title": "Values"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "MasterCharacteristicTranslation",
+      "type": "object"
+    },
+    "MasterProductPromo": {
+      "description": "Active storefront promo of a product (since 1.17.0).\n\nPresent only while the promo is active. MasterProductRecord.price is then the promo\nprice the customer pays; compare_at_price is the regular retail price shown struck through.\nRetail data: not exposed to partners.",
+      "properties": {
+        "compare_at_price": {
+          "description": "Regular retail price before the promo, always greater than the record price",
+          "title": "Compare At Price",
+          "type": "number"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Campaign name shown to the customer, e.g. 'Наурыз'; null for a single-product promo",
+          "title": "Name"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Short customer-facing note, e.g. clearance reason 'повреждена упаковка'",
+          "title": "Note"
+        },
+        "slug": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "URL-safe campaign slug for grouping products on the storefront promo page",
+          "title": "Slug"
+        },
+        "translations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/MasterProductPromoTranslation"
+          },
+          "description": "Promo text translations keyed by language code, currently only 'kk'",
+          "title": "Translations",
+          "type": "object"
+        },
+        "type": {
+          "description": "'sale' — dated promo, single product or part of a named campaign (name/slug set); 'clearance' — markdown of a damaged or last unit, lasts until sold out. Consumers must treat unknown values as a generic promo",
+          "title": "Type",
+          "type": "string"
+        },
+        "until": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "UTC time when the promo ends; null for open-ended promos (clearance). After it the storefront must show the regular price until the next sync",
+          "title": "Until"
+        }
+      },
+      "required": [
+        "type",
+        "compare_at_price"
+      ],
+      "title": "MasterProductPromo",
+      "type": "object"
+    },
+    "MasterProductPromoTranslation": {
+      "description": "Translation of promo texts into one storefront language (since 1.17.0).",
+      "properties": {
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Translated campaign name",
+          "title": "Name"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Translated customer-facing note",
+          "title": "Note"
+        }
+      },
+      "title": "MasterProductPromoTranslation",
+      "type": "object"
+    },
+    "MasterProductRecord": {
+      "description": "Master product record as exported by inventory for storefronts.",
+      "properties": {
+        "brand": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Brand name",
+          "title": "Brand"
+        },
+        "category": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Category name",
+          "title": "Category"
+        },
+        "category_slug": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Stable URL slug of the product category (owned by PIM, since 1.3.0)",
+          "title": "Category Slug"
+        },
+        "characteristics": {
+          "description": "Key-value characteristics",
+          "items": {
+            "$ref": "#/$defs/MasterCharacteristicRecord"
+          },
+          "title": "Characteristics",
+          "type": "array"
+        },
+        "cost_price": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Cost price. Not published by PLP; kept for v1.x compatibility",
+          "title": "Cost Price"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Resolved product description",
+          "title": "Description"
+        },
+        "gpc_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Google product category ID",
+          "title": "Gpc Id"
+        },
+        "id": {
+          "description": "Internal product primary key",
+          "title": "Id",
+          "type": "integer"
+        },
+        "merged_ids": {
+          "description": "IDs of duplicate products merged into this one; storefront answers their id URLs with 301 to this product. Slugs of merged duplicates are added to previous_slugs (since 1.16.0)",
+          "items": {
+            "type": "integer"
+          },
+          "title": "Merged Ids",
+          "type": "array"
+        },
+        "mpn": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Manufacturer part number",
+          "title": "Mpn"
+        },
+        "name": {
+          "description": "Resolved product name (PIM name, else base name)",
+          "title": "Name",
+          "type": "string"
+        },
+        "photos": {
+          "description": "Absolute public photo URLs",
+          "items": {
+            "type": "string"
+          },
+          "title": "Photos",
+          "type": "array"
+        },
+        "previous_slugs": {
+          "description": "Former slugs of this product; storefront answers them with 301 to the current slug (since 1.5.0)",
+          "items": {
+            "type": "string"
+          },
+          "title": "Previous Slugs",
+          "type": "array"
+        },
+        "price": {
+          "description": "Retail price",
+          "title": "Price",
+          "type": "number"
+        },
+        "price_updated_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "UTC time since which the current retail price is in effect; set by PIM whenever the price changes, null when unknown (since 1.11.0)",
+          "title": "Price Updated At"
+        },
+        "promo": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MasterProductPromo"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Active promo; null when the product is sold at the regular price (since 1.17.0)"
+        },
+        "related": {
+          "description": "Linked products in the order the manager set them; the linked product may be absent from the export (out of stock, not public) (since 1.8.0)",
+          "items": {
+            "$ref": "#/$defs/MasterProductRelation"
+          },
+          "title": "Related",
+          "type": "array"
+        },
+        "seo_description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "SEO meta description generated by PIM (since 1.4.0)",
+          "title": "Seo Description"
+        },
+        "seo_title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "SEO meta title generated by PIM (since 1.4.0)",
+          "title": "Seo Title"
+        },
+        "shipping_dimension_unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Unit of shipping_length/width/height, e.g. 'cm' (since 1.4.0)",
+          "title": "Shipping Dimension Unit"
+        },
+        "shipping_height": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Shipping height",
+          "title": "Shipping Height"
+        },
+        "shipping_length": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Shipping length",
+          "title": "Shipping Length"
+        },
+        "shipping_weight": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Shipping weight",
+          "title": "Shipping Weight"
+        },
+        "shipping_weight_unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Unit of shipping_weight, e.g. 'kg' (since 1.4.0)",
+          "title": "Shipping Weight Unit"
+        },
+        "shipping_width": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Shipping width",
+          "title": "Shipping Width"
+        },
+        "slug": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Product URL slug built by PIM from pim_name when the admin saves the card (since 1.5.0)",
+          "title": "Slug"
+        },
+        "stock": {
+          "description": "Stock status label, e.g. 'в наличии' or 'нету'",
+          "title": "Stock",
+          "type": "string"
+        },
+        "stock_quantity": {
+          "default": 0.0,
+          "description": "Real available quantity (quantity - reserve - quarantine, min 0)",
+          "title": "Stock Quantity",
+          "type": "number"
+        },
+        "translations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/MasterProductTranslation"
+          },
+          "description": "Product text translations keyed by language code, currently only 'kk' (since 1.6.0)",
+          "title": "Translations",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "price",
+        "stock"
+      ],
+      "title": "MasterProductRecord",
+      "type": "object"
+    },
+    "MasterProductRelation": {
+      "description": "Link from a master product to another product, set by the content manager in PIM (since 1.8.0).",
+      "properties": {
+        "product_id": {
+          "description": "Id of the linked product (MasterProductRecord.id)",
+          "title": "Product Id",
+          "type": "integer"
+        },
+        "relation_type": {
+          "description": "'REQUIRED_COMPONENT' — needed to install or use the product (e.g. a siphon for a sink), 'RECOMMENDED' — goes well with it, 'COLLECTION_PAIR' — item of the same collection",
+          "enum": [
+            "REQUIRED_COMPONENT",
+            "RECOMMENDED",
+            "COLLECTION_PAIR"
+          ],
+          "title": "Relation Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "product_id",
+        "relation_type"
+      ],
+      "title": "MasterProductRelation",
+      "type": "object"
+    },
+    "MasterProductTranslation": {
+      "description": "Translation of product texts into one storefront language (since 1.6.0).",
+      "properties": {
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Translated product description",
+          "title": "Description"
+        },
+        "is_outdated": {
+          "default": false,
+          "description": "True when the Russian source text changed after this translation was made",
+          "title": "Is Outdated",
+          "type": "boolean"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Translated product name",
+          "title": "Name"
+        },
+        "seo_description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Translated SEO meta description",
+          "title": "Seo Description"
+        },
+        "seo_title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Translated SEO meta title",
+          "title": "Seo Title"
+        },
+        "status": {
+          "description": "'machine' — draft translated by Claude, 'reviewed' — checked by a human",
+          "enum": [
+            "machine",
+            "reviewed"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "MasterProductTranslation",
+      "type": "object"
+    }
+  },
+  "title": "pim-contracts storefront records",
+  "x-pim-contracts-version": "1.18.0"
+}

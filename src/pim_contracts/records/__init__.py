@@ -12,6 +12,7 @@ from pim_contracts.records.partner import PartnerOfferRecord, PartnerProductReco
 from pim_contracts.records.product import (
     AttributeGroup,
     AttributeSection,
+    MasterCategoryCompanion,
     MasterCategoryRecord,
     MasterCategoryTranslation,
     MasterCharacteristicRecord,
@@ -34,6 +35,7 @@ __all__ = [
     "BundleTier",
     "MasterBundleSetRecord",
     "MasterBundleSetTranslation",
+    "MasterCategoryCompanion",
     "MasterCategoryRecord",
     "MasterCategoryTranslation",
     "MasterCharacteristicRecord",

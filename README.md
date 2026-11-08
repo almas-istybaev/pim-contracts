@@ -23,6 +23,13 @@ pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.15.0"
 
 История 1.5–1.11 — в сообщениях тегов (`git tag -n1`).
 
+### 1.21.0
+Рекомендации (связи и компаньоны категорий) — только опциональные поля и DTO, payload 1.20.0 валиден. Значения `RelationType` не менялись.
+- `MasterProductRelation.kind: "manual" | "rule" | None` — кто создал связь (`None` = manual, продюсер до 1.21.0); `score: float | None` (0..1, у manual 1.0); `reason: list[str]` — коды причин (`same_width`, `same_series`, `same_finish`, `same_color`, `same_brand`, `fits_length`, `price_tier`), неизвестные коды игнорировать.
+- `MasterProductRecord.related` — сначала ручные, потом сгенерированные по убыванию `score`.
+- Новый `MasterCategoryCompanion` (`category_id`, `category_slug`, `relation_type`, `priority ≥ 1`).
+- `MasterCategoryRecord.companions: list[MasterCategoryCompanion]` (уже с наследованием, по `priority`) и `substitute_group: str | None` (группа взаимозаменяемых категорий, с наследованием). Фильтры компаньонов по атрибутам не публикуются.
+
 ### 1.20.0
 - `MasterCategoryRecord.cutout: str | None` (после `photo`) — публичный URL (CDN) прозрачного 3D-рендера типового товара категории: без фона, ~1:1, обрезан по краям, WebP/PNG с альфой. Загружает контент-менеджер в админке inventory, медиа общее для всех языков. `null` — не загружен, витрина показывает `photo`. Нужен рельсу «Каталог» на главной santeh24.kz.
 

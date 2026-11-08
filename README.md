@@ -23,6 +23,14 @@ pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.15.0"
 
 История 1.5–1.11 — в сообщениях тегов (`git tag -n1`).
 
+### 1.19.0
+Скидка за комплект — только новые опциональные поля и DTO, payload 1.18.0 валиден:
+- `MasterCategoryRecord.bundle_role: str | None` — ключ роли, заданный на самой категории (наследование считает PIM).
+- `MasterProductRecord.bundle: MasterProductBundle | None` = `{ role: str | None, max_percent: int 0–100 }` — роль уже с учётом наследования категорий; `max_percent` inventory считает из маржи (себестоимость не публикуется). Розничные данные: в `PartnerProductRecord` нет.
+- `BundleRules` = `{ enabled, tiers: [BundleTier{roles, percent}], roles: [BundleRole{key, name, name_kk, min_price}] }` — опубликованное правило; витрина считает скидку сама.
+- `MasterBundleSetRecord` = `{ slug, name, translations: {kk: {name}}, image, product_ids }` — готовые комплекты из админки inventory.
+- Неизвестная роль у потребителя = аксессуар. `schemas/storefront.schema.json` теперь включает `BundleRules` и `MasterBundleSetRecord`.
+
 ### 1.18.0
 JSON Schema витринных записей (`MasterProductRecord`, `MasterCategoryRecord`, режим serialization) публикуется в каждом теге: `schemas/storefront.schema.json`, ключ `x-pim-contracts-version` — версия пакета. Публичный URL: `https://raw.githubusercontent.com/almas-istybaev/pim-contracts/vX.Y.Z/schemas/storefront.schema.json`. Схемы DTO не менялись.
 - После правки моделей или версии: `.venv/bin/python scripts/storefront_schema.py`; `tests/test_storefront_schema.py` падает, если файл устарел.

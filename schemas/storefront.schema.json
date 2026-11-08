@@ -1,8 +1,185 @@
 {
   "$defs": {
+    "BundleRole": {
+      "description": "Product role counted by the bundle rule, e.g. bath, toilet, furniture (since 1.19.0).",
+      "properties": {
+        "key": {
+          "description": "Stable role key referenced by MasterCategoryRecord.bundle_role and MasterProductBundle.role; a product whose key is not listed here is an accessory",
+          "title": "Key",
+          "type": "string"
+        },
+        "min_price": {
+          "default": 0,
+          "description": "Minimum unit price in KZT for a product to count for this role; cheaper products count for no role (accessory) but still get the cart discount",
+          "minimum": 0,
+          "title": "Min Price",
+          "type": "integer"
+        },
+        "name": {
+          "description": "Role name shown to the customer, Russian",
+          "title": "Name",
+          "type": "string"
+        },
+        "name_kk": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Role name in Kazakh; null — show the Russian one",
+          "title": "Name Kk"
+        }
+      },
+      "required": [
+        "key",
+        "name"
+      ],
+      "title": "BundleRole",
+      "type": "object"
+    },
+    "BundleRules": {
+      "description": "Published bundle-discount rule (since 1.19.0).\n\nBundle discount does not stack with a promo (MasterProductRecord.promo): a product on promo\nkeeps its promo price. Savings are shown in KZT.",
+      "properties": {
+        "enabled": {
+          "default": false,
+          "description": "Master switch; false — the storefront shows no bundle discount at all",
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "roles": {
+          "description": "Roles counted by the rule, in display order",
+          "items": {
+            "$ref": "#/$defs/BundleRole"
+          },
+          "title": "Roles",
+          "type": "array"
+        },
+        "tiers": {
+          "description": "Discount steps sorted by roles ascending",
+          "items": {
+            "$ref": "#/$defs/BundleTier"
+          },
+          "title": "Tiers",
+          "type": "array"
+        }
+      },
+      "title": "BundleRules",
+      "type": "object"
+    },
+    "BundleTier": {
+      "description": "One discount step of the bundle rule (since 1.19.0).",
+      "properties": {
+        "percent": {
+          "description": "Discount percent applied to the whole cart; on each line it is capped by MasterProductRecord.bundle.max_percent",
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Percent",
+          "type": "integer"
+        },
+        "roles": {
+          "description": "Minimum number of different roles in the cart for this step, e.g. 2, 3, 4 (4 means '4 or more'); the step with the largest roles not above the cart count applies",
+          "minimum": 1,
+          "title": "Roles",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "roles",
+        "percent"
+      ],
+      "title": "BundleTier",
+      "type": "object"
+    },
+    "MasterBundleSetRecord": {
+      "description": "Ready-made set of products assembled by the content manager in the inventory admin (since 1.19.0).\n\nPublished only while every product of the set is in stock; the set price is the bundle\nquote of its products under BundleRules.",
+      "properties": {
+        "image": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Absolute public image URL; null — use product photos",
+          "title": "Image"
+        },
+        "name": {
+          "description": "Set name, Russian",
+          "title": "Name",
+          "type": "string"
+        },
+        "product_ids": {
+          "description": "Product ids (MasterProductRecord.id) in display order, one unit each",
+          "items": {
+            "type": "integer"
+          },
+          "title": "Product Ids",
+          "type": "array"
+        },
+        "slug": {
+          "description": "Stable URL slug of the set, owned by PIM",
+          "title": "Slug",
+          "type": "string"
+        },
+        "translations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/MasterBundleSetTranslation"
+          },
+          "description": "Set text translations keyed by language code, currently only 'kk'",
+          "title": "Translations",
+          "type": "object"
+        }
+      },
+      "required": [
+        "slug",
+        "name"
+      ],
+      "title": "MasterBundleSetRecord",
+      "type": "object"
+    },
+    "MasterBundleSetTranslation": {
+      "description": "Translation of bundle set texts into one storefront language (since 1.19.0).",
+      "properties": {
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Translated set name",
+          "title": "Name"
+        }
+      },
+      "title": "MasterBundleSetTranslation",
+      "type": "object"
+    },
     "MasterCategoryRecord": {
       "description": "Category (taxonomy node) as exported by inventory for storefronts.",
       "properties": {
+        "bundle_role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bundle role key (BundleRole.key) set on this category itself; null — not set here, the role may be inherited from a parent category. Resolved roles are published in MasterProductRecord.bundle.role. Consumers must treat an unknown key as an accessory (since 1.19.0)",
+          "title": "Bundle Role"
+        },
         "description": {
           "anyOf": [
             {
@@ -355,6 +532,36 @@
       "title": "MasterCharacteristicTranslation",
       "type": "object"
     },
+    "MasterProductBundle": {
+      "description": "Bundle-discount data of a product (since 1.19.0).\n\nRetail data: not exposed to partners. The storefront computes the bundle discount itself\nfrom BundleRules, because the cart lives only in the browser.",
+      "properties": {
+        "max_percent": {
+          "description": "Maximum bundle discount percent allowed on this product. Computed by inventory from the product margin and the min_margin of its price rule; 0 for excluded products and products without a purchase price. The cost price is never published, only this cap",
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Max Percent",
+          "type": "integer"
+        },
+        "role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bundle role key (BundleRole.key) of the product, already resolved by PIM with inheritance from parent categories, so consumers need not walk the category tree. null — the product has no role (accessory). Consumers must treat a key missing from BundleRules.roles as an accessory: it counts for no role but still gets the discount of the cart",
+          "title": "Role"
+        }
+      },
+      "required": [
+        "max_percent"
+      ],
+      "title": "MasterProductBundle",
+      "type": "object"
+    },
     "MasterProductPromo": {
       "description": "Active storefront promo of a product (since 1.17.0).\n\nPresent only while the promo is active. MasterProductRecord.price is then the promo\nprice the customer pays; compare_at_price is the regular retail price shown struck through.\nRetail data: not exposed to partners.",
       "properties": {
@@ -485,6 +692,18 @@
           "default": null,
           "description": "Brand name",
           "title": "Brand"
+        },
+        "bundle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MasterProductBundle"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bundle-discount role and cap; null — the product takes no part in the bundle discount (e.g. rules are off or the producer predates 1.19.0) (since 1.19.0)"
         },
         "category": {
           "anyOf": [
@@ -896,5 +1115,5 @@
     }
   },
   "title": "pim-contracts storefront records",
-  "x-pim-contracts-version": "1.18.0"
+  "x-pim-contracts-version": "1.19.0"
 }

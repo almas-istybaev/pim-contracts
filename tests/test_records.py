@@ -1,4 +1,8 @@
+import pytest
+from pydantic import ValidationError
+
 from pim_contracts import (
+    MasterCategoryCompanion,
     MasterCategoryRecord,
     MasterCategoryTranslation,
     MasterCharacteristicTranslation,
@@ -312,7 +316,7 @@ def test_product_related_roundtrip():
         }
     )
     assert [(r.product_id, r.relation_type) for r in rec.related] == [(20, "REQUIRED_COMPONENT"), (21, "RECOMMENDED")]
-    assert rec.model_dump()["related"][0] == {"product_id": 20, "relation_type": "REQUIRED_COMPONENT"}
+    assert rec.model_dump(exclude_defaults=True)["related"][0] == {"product_id": 20, "relation_type": "REQUIRED_COMPONENT"}
 
 
 def test_relation_type_rejects_unknown_value():
@@ -449,3 +453,57 @@ def test_category_cutout_roundtrip():
     )
     restored = MasterCategoryRecord.model_validate_json(cat.model_dump_json())
     assert restored.cutout == "https://cdn.santeh24.kz/categories/smesiteli.webp"
+
+
+def test_relation_absent_new_fields_in_1_20_0_payload():
+    """Связь формата 1.20.0 (без kind/score/reason) остаётся валидной."""
+    rel = MasterProductRelation.model_validate({"product_id": 5, "relation_type": "RECOMMENDED"})
+    assert rel.kind is None and rel.score is None and rel.reason == []
+
+
+def test_relation_rule_fields_roundtrip():
+    rel = MasterProductRelation.model_validate(
+        {
+            "product_id": 7,
+            "relation_type": "REQUIRED_COMPONENT",
+            "kind": "rule",
+            "score": 0.82,
+            "reason": ["same_width", "future_code"],
+        }
+    )
+    restored = MasterProductRelation.model_validate_json(rel.model_dump_json())
+    assert restored.kind == "rule" and restored.score == 0.82
+    assert restored.reason == ["same_width", "future_code"]
+
+
+def test_relation_score_bounds():
+    with pytest.raises(ValidationError):
+        MasterProductRelation(product_id=1, relation_type="RECOMMENDED", score=1.5)
+
+
+def test_category_companions_absent_in_1_20_0_payload():
+    cat = MasterCategoryRecord.model_validate({"id": 1, "name": "Тумбы"})
+    assert cat.companions == [] and cat.substitute_group is None
+
+
+def test_category_companions_roundtrip():
+    cat = MasterCategoryRecord.model_validate(
+        {
+            "id": 10,
+            "name": "Тумбы под раковину",
+            "substitute_group": "furniture",
+            "companions": [
+                {"category_id": 21, "category_slug": "na-tumbu", "relation_type": "REQUIRED_COMPONENT", "priority": 1},
+                {"category_id": 30, "relation_type": "RECOMMENDED", "priority": 4},
+            ],
+        }
+    )
+    restored = MasterCategoryRecord.model_validate_json(cat.model_dump_json())
+    assert [c.category_id for c in restored.companions] == [21, 30]
+    assert restored.companions[1].category_slug is None
+    assert restored.substitute_group == "furniture"
+
+
+def test_category_companion_priority_positive():
+    with pytest.raises(ValidationError):
+        MasterCategoryCompanion(category_id=1, relation_type="RECOMMENDED", priority=0)

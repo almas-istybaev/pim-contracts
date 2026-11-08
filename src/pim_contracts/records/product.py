@@ -199,6 +199,37 @@ class MasterProductPromo(BaseModel):
     )
 
 
+class MasterProductBundle(BaseModel):
+    """
+    Bundle-discount data of a product (since 1.19.0).
+
+    Retail data: not exposed to partners. The storefront computes the bundle discount itself
+    from BundleRules, because the cart lives only in the browser.
+    """
+
+    model_config = ConfigDict(extra="ignore", from_attributes=True)
+
+    role: str | None = Field(
+        default=None,
+        description=(
+            "Bundle role key (BundleRole.key) of the product, already resolved by PIM with inheritance "
+            "from parent categories, so consumers need not walk the category tree. null — the product "
+            "has no role (accessory). Consumers must treat a key missing from BundleRules.roles as an "
+            "accessory: it counts for no role but still gets the discount of the cart"
+        ),
+    )
+    max_percent: int = Field(
+        ...,
+        ge=0,
+        le=100,
+        description=(
+            "Maximum bundle discount percent allowed on this product. Computed by inventory from the "
+            "product margin and the min_margin of its price rule; 0 for excluded products and products "
+            "without a purchase price. The cost price is never published, only this cap"
+        ),
+    )
+
+
 class MasterProductRecord(BaseModel):
     """Master product record as exported by inventory for storefronts."""
 
@@ -287,6 +318,13 @@ class MasterProductRecord(BaseModel):
         default=None,
         description="Active promo; null when the product is sold at the regular price (since 1.17.0)",
     )
+    bundle: MasterProductBundle | None = Field(
+        default=None,
+        description=(
+            "Bundle-discount role and cap; null — the product takes no part in the bundle discount "
+            "(e.g. rules are off or the producer predates 1.19.0) (since 1.19.0)"
+        ),
+    )
 
 
 class MasterCategoryTranslation(BaseModel):
@@ -330,4 +368,12 @@ class MasterCategoryRecord(BaseModel):
     translations: dict[str, MasterCategoryTranslation] = Field(
         default_factory=dict,
         description="Category text translations keyed by language code, currently only 'kk' (since 1.7.0)",
+    )
+    bundle_role: str | None = Field(
+        default=None,
+        description=(
+            "Bundle role key (BundleRole.key) set on this category itself; null — not set here, the role "
+            "may be inherited from a parent category. Resolved roles are published in "
+            "MasterProductRecord.bundle.role. Consumers must treat an unknown key as an accessory (since 1.19.0)"
+        ),
     )

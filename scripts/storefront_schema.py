@@ -11,7 +11,12 @@ from pathlib import Path
 import tomllib
 from pydantic.json_schema import models_json_schema
 
-from pim_contracts import MasterCategoryRecord, MasterProductRecord
+from pim_contracts import (
+    BundleRules,
+    MasterBundleSetRecord,
+    MasterCategoryRecord,
+    MasterProductRecord,
+)
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "schemas" / "storefront.schema.json"
@@ -20,7 +25,12 @@ OUT = ROOT / "schemas" / "storefront.schema.json"
 def render() -> str:
     version = tomllib.loads((ROOT / "pyproject.toml").read_text())["project"]["version"]
     _, schema = models_json_schema(
-        [(MasterProductRecord, "serialization"), (MasterCategoryRecord, "serialization")],
+        [
+            (MasterProductRecord, "serialization"),
+            (MasterCategoryRecord, "serialization"),
+            (BundleRules, "serialization"),
+            (MasterBundleSetRecord, "serialization"),
+        ],
         title="pim-contracts storefront records",
     )
     schema["x-pim-contracts-version"] = version

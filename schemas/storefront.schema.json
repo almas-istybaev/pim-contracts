@@ -180,6 +180,19 @@
           "description": "Bundle role key (BundleRole.key) set on this category itself; null — not set here, the role may be inherited from a parent category. Resolved roles are published in MasterProductRecord.bundle.role. Consumers must treat an unknown key as an accessory (since 1.19.0)",
           "title": "Bundle Role"
         },
+        "cutout": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Public CDN URL of a transparent 3D render of a typical product of the category: no background, about 1:1, trimmed to the edges, WebP or PNG with alpha; uploaded by the content manager in the inventory admin, shared by all languages. null — not uploaded, the storefront falls back to photo (since 1.20.0)",
+          "title": "Cutout"
+        },
         "description": {
           "anyOf": [
             {
@@ -1115,5 +1128,5 @@
     }
   },
   "title": "pim-contracts storefront records",
-  "x-pim-contracts-version": "1.19.0"
+  "x-pim-contracts-version": "1.20.0"
 }

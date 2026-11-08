@@ -365,6 +365,15 @@ class MasterCategoryRecord(BaseModel):
     parent_id: int | None = Field(default=None, description="Parent category ID")
     description: str | None = Field(default=None, description="Category description")
     photo: str | None = Field(default=None, description="Public photo URL")
+    cutout: str | None = Field(
+        default=None,
+        description=(
+            "Public CDN URL of a transparent 3D render of a typical product of the category: no background, "
+            "about 1:1, trimmed to the edges, WebP or PNG with alpha; uploaded by the content manager in "
+            "the inventory admin, shared by all languages. null — not uploaded, the storefront falls back "
+            "to photo (since 1.20.0)"
+        ),
+    )
     translations: dict[str, MasterCategoryTranslation] = Field(
         default_factory=dict,
         description="Category text translations keyed by language code, currently only 'kk' (since 1.7.0)",

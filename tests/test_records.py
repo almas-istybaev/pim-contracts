@@ -435,3 +435,17 @@ def test_promo_clearance_defaults():
 def test_promo_type_accepts_unknown_value():
     """Новые виды акций не ломают старых потребителей."""
     assert MasterProductPromo(type="flash", compare_at_price=2.0).type == "flash"
+
+
+def test_category_cutout_absent_in_1_19_0_payload():
+    """Payload формата 1.19.0 (без cutout) остаётся валидным."""
+    cat = MasterCategoryRecord.model_validate({"id": 1, "name": "Унитазы", "photo": "https://cdn/x.jpg"})
+    assert cat.cutout is None
+
+
+def test_category_cutout_roundtrip():
+    cat = MasterCategoryRecord.model_validate(
+        {"id": 2, "name": "Смесители", "cutout": "https://cdn.santeh24.kz/categories/smesiteli.webp"}
+    )
+    restored = MasterCategoryRecord.model_validate_json(cat.model_dump_json())
+    assert restored.cutout == "https://cdn.santeh24.kz/categories/smesiteli.webp"

@@ -42,6 +42,10 @@ from pim_contracts.records import (
     PartnerOfferRecord,
     PartnerProductRecord,
     RelationType,
+    SearchHit,
+    SearchMatch,
+    SearchMode,
+    SearchResponse,
     TranslationStatus,
 )
 
@@ -86,6 +90,10 @@ __all__ = [
     "ProductPriceUpdateEvent",
     "ProductStockUpdateEvent",
     "RelationType",
+    "SearchHit",
+    "SearchMatch",
+    "SearchMode",
+    "SearchResponse",
     "SourceType",
     "TranslationStatus",
 ]

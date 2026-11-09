@@ -16,6 +16,7 @@ from pim_contracts import (
     MasterBundleSetRecord,
     MasterCategoryRecord,
     MasterProductRecord,
+    SearchResponse,
 )
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -30,6 +31,7 @@ def render() -> str:
             (MasterCategoryRecord, "serialization"),
             (BundleRules, "serialization"),
             (MasterBundleSetRecord, "serialization"),
+            (SearchResponse, "serialization"),
         ],
         title="pim-contracts storefront records",
     )

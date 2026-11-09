@@ -1232,8 +1232,75 @@
       ],
       "title": "MasterProductTranslation",
       "type": "object"
+    },
+    "SearchHit": {
+      "description": "One ranked product of a search response (since 1.22.0).",
+      "properties": {
+        "id": {
+          "description": "MasterProductRecord.id",
+          "title": "Id",
+          "type": "integer"
+        },
+        "match": {
+          "description": "Why the product was found: exact — SKU / article; lexical — words of the query; semantic — meaning only (synonyms, other language); hybrid — both",
+          "enum": [
+            "exact",
+            "lexical",
+            "semantic",
+            "hybrid"
+          ],
+          "title": "Match",
+          "type": "string"
+        },
+        "score": {
+          "description": "Relevance, higher is better; comparable only within one response",
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "score",
+        "match"
+      ],
+      "title": "SearchHit",
+      "type": "object"
+    },
+    "SearchResponse": {
+      "description": "Ranked search result (since 1.22.0).",
+      "properties": {
+        "hits": {
+          "description": "Best first",
+          "items": {
+            "$ref": "#/$defs/SearchHit"
+          },
+          "title": "Hits",
+          "type": "array"
+        },
+        "mode": {
+          "description": "hybrid — words and meaning; lexical — words only (semantic part unavailable or not needed)",
+          "enum": [
+            "hybrid",
+            "lexical"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "query": {
+          "description": "The query as received",
+          "title": "Query",
+          "type": "string"
+        }
+      },
+      "required": [
+        "query",
+        "mode"
+      ],
+      "title": "SearchResponse",
+      "type": "object"
     }
   },
   "title": "pim-contracts storefront records",
-  "x-pim-contracts-version": "1.21.0"
+  "x-pim-contracts-version": "1.22.0"
 }

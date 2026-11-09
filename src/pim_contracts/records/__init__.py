@@ -26,6 +26,7 @@ from pim_contracts.records.product import (
     RelationType,
     TranslationStatus,
 )
+from pim_contracts.records.search import SearchHit, SearchMatch, SearchMode, SearchResponse
 
 __all__ = [
     "AttributeGroup",
@@ -49,5 +50,9 @@ __all__ = [
     "PartnerOfferRecord",
     "PartnerProductRecord",
     "RelationType",
+    "SearchHit",
+    "SearchMatch",
+    "SearchMode",
+    "SearchResponse",
     "TranslationStatus",
 ]

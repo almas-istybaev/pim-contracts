@@ -23,6 +23,10 @@ pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.15.0"
 
 История 1.5–1.11 — в сообщениях тегов (`git tag -n1`).
 
+### 1.22.0
+Поиск товаров — новые DTO, существующие записи не менялись.
+- `SearchResponse{query, mode: "hybrid" | "lexical", hits}` и `SearchHit{id, score, match: "exact" | "lexical" | "semantic" | "hybrid"}` — ответ `GET /api/v1/integrations/santeh24/search` в inventory. Витрина рендерит товары из своего кэша в порядке `hits`, id вне кэша пропускает. Попадают в `schemas/storefront.schema.json`.
+
 ### 1.21.0
 Рекомендации (связи и компаньоны категорий) — только опциональные поля и DTO, payload 1.20.0 валиден. Значения `RelationType` не менялись.
 - `MasterProductRelation.kind: "manual" | "rule" | None` — кто создал связь (`None` = manual, продюсер до 1.21.0); `score: float | None` (0..1, у manual 1.0); `reason: list[str]` — коды причин (`same_width`, `same_series`, `same_finish`, `same_color`, `same_brand`, `fits_length`, `price_tier`), неизвестные коды игнорировать.

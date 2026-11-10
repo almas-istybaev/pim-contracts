@@ -372,6 +372,15 @@ class MasterProductRecord(BaseModel):
             "(e.g. rules are off or the producer predates 1.19.0) (since 1.19.0)"
         ),
     )
+    sort_rank: int | None = Field(
+        default=None,
+        ge=0,
+        description=(
+            "Merchandising rank set by PIM from the product's manual promo and its supplier's rank: lower goes "
+            "first. Applies inside the storefront's own stock and photo groups (in-stock with a photo first); "
+            "null — no rank, after ranked products (since 1.25.0)"
+        ),
+    )
 
 
 class MasterCategoryTranslation(BaseModel):

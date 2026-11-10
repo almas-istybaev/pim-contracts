@@ -1061,6 +1061,20 @@
           "description": "Product URL slug built by PIM from pim_name when the admin saves the card (since 1.5.0)",
           "title": "Slug"
         },
+        "sort_rank": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Merchandising rank set by PIM from the product's manual promo and its supplier's rank: lower goes first. Applies inside the storefront's own stock and photo groups (in-stock with a photo first); null — no rank, after ranked products (since 1.25.0)",
+          "title": "Sort Rank"
+        },
         "stock": {
           "description": "Stock status label, e.g. 'в наличии' or 'нету'",
           "title": "Stock",
@@ -1410,5 +1424,5 @@
     }
   },
   "title": "pim-contracts storefront records",
-  "x-pim-contracts-version": "1.24.0"
+  "x-pim-contracts-version": "1.25.0"
 }

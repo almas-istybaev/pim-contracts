@@ -254,6 +254,24 @@ class MasterProductBundle(BaseModel):
     )
 
 
+class ProductVideo(BaseModel):
+    """Product video review hosted on the PIM CDN (since 1.24.0).
+
+    Exported only after the upload is transcoded to a web-ready MP4 and a poster frame is extracted.
+    """
+
+    model_config = ConfigDict(extra="ignore", from_attributes=True)
+
+    url: str = Field(..., description="Absolute public URL of the web-ready MP4 (H.264/AAC)")
+    poster: str = Field(..., description="Absolute public URL of the poster frame image")
+    duration_sec: int | None = Field(default=None, description="Duration in whole seconds")
+    width: int | None = Field(default=None, description="Frame width in pixels")
+    height: int | None = Field(default=None, description="Frame height in pixels; height > width for vertical video")
+    title: str | None = Field(default=None, description="Video title in Russian")
+    title_kk: str | None = Field(default=None, description="Video title in Kazakh")
+    uploaded_at: datetime | None = Field(default=None, description="UTC time the video was uploaded to PIM")
+
+
 class MasterProductRecord(BaseModel):
     """Master product record as exported by inventory for storefronts."""
 
@@ -327,6 +345,10 @@ class MasterProductRecord(BaseModel):
         description="Real available quantity (quantity - reserve - quarantine, min 0)",
     )
     photos: list[str] = Field(default_factory=list, description="Absolute public photo URLs")
+    videos: list[ProductVideo] = Field(
+        default_factory=list,
+        description="Video reviews in display order; empty when the product has none (since 1.24.0)",
+    )
     translations: dict[str, MasterProductTranslation] = Field(
         default_factory=dict,
         description="Product text translations keyed by language code, currently only 'kk' (since 1.6.0)",

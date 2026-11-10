@@ -1079,6 +1079,14 @@
           "description": "Product text translations keyed by language code, currently only 'kk' (since 1.6.0)",
           "title": "Translations",
           "type": "object"
+        },
+        "videos": {
+          "description": "Video reviews in display order; empty when the product has none (since 1.24.0)",
+          "items": {
+            "$ref": "#/$defs/ProductVideo"
+          },
+          "title": "Videos",
+          "type": "array"
         }
       },
       "required": [
@@ -1233,6 +1241,106 @@
       "title": "MasterProductTranslation",
       "type": "object"
     },
+    "ProductVideo": {
+      "description": "Product video review hosted on the PIM CDN (since 1.24.0).\n\nExported only after the upload is transcoded to a web-ready MP4 and a poster frame is extracted.",
+      "properties": {
+        "duration_sec": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Duration in whole seconds",
+          "title": "Duration Sec"
+        },
+        "height": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Frame height in pixels; height > width for vertical video",
+          "title": "Height"
+        },
+        "poster": {
+          "description": "Absolute public URL of the poster frame image",
+          "title": "Poster",
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Video title in Russian",
+          "title": "Title"
+        },
+        "title_kk": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Video title in Kazakh",
+          "title": "Title Kk"
+        },
+        "uploaded_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "UTC time the video was uploaded to PIM",
+          "title": "Uploaded At"
+        },
+        "url": {
+          "description": "Absolute public URL of the web-ready MP4 (H.264/AAC)",
+          "title": "Url",
+          "type": "string"
+        },
+        "width": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Frame width in pixels",
+          "title": "Width"
+        }
+      },
+      "required": [
+        "url",
+        "poster"
+      ],
+      "title": "ProductVideo",
+      "type": "object"
+    },
     "SearchHit": {
       "description": "One ranked product of a search response (since 1.22.0).",
       "properties": {
@@ -1302,5 +1410,5 @@
     }
   },
   "title": "pim-contracts storefront records",
-  "x-pim-contracts-version": "1.22.0"
+  "x-pim-contracts-version": "1.24.0"
 }

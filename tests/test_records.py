@@ -543,3 +543,15 @@ def test_product_videos_parse():
 def test_product_video_requires_url_and_poster():
     with pytest.raises(ValidationError):
         ProductVideo.model_validate({"url": "https://cdn.santeh24.kz/v.mp4"})
+
+
+def test_product_sort_rank_default_none_for_old_payload():
+    rec = MasterProductRecord.model_validate({"id": 3, "name": "Ванна", "price": 1.0, "stock": "нету"})
+    assert rec.sort_rank is None
+
+
+def test_product_sort_rank_not_negative():
+    rec = MasterProductRecord.model_validate({"id": 3, "name": "Ванна", "price": 1.0, "stock": "нету", "sort_rank": 2})
+    assert rec.sort_rank == 2
+    with pytest.raises(ValidationError):
+        MasterProductRecord.model_validate({"id": 3, "name": "Ванна", "price": 1.0, "stock": "нету", "sort_rank": -1})

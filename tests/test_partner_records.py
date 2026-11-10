@@ -10,7 +10,7 @@ from pim_contracts import (
     PartnerProductRecord,
 )
 
-RETAIL_FIELDS = {"price", "price_updated_at", "cost_price", "stock", "stock_quantity", "promo", "bundle"}
+RETAIL_FIELDS = {"price", "price_updated_at", "cost_price", "stock", "stock_quantity", "promo", "bundle", "sort_rank"}
 
 
 def test_partner_product_fields_match_master_without_retail():
@@ -31,7 +31,7 @@ def test_master_product_field_order_unchanged():
         "shipping_dimension_unit", "shipping_weight_unit", "category", "category_slug",
         "description", "seo_title", "seo_description", "characteristics",
         "price", "price_updated_at", "cost_price", "stock", "stock_quantity",
-        "photos", "videos", "translations", "related", "promo", "bundle",
+        "photos", "videos", "translations", "related", "promo", "bundle", "sort_rank",
     ]
 
 

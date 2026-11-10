@@ -26,6 +26,7 @@ pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.15.0"
 ### 1.22.0
 Поиск товаров — новые DTO, существующие записи не менялись.
 - `SearchResponse{query, mode: "hybrid" | "lexical", hits}` и `SearchHit{id, score, match: "exact" | "lexical" | "semantic" | "hybrid"}` — ответ `GET /api/v1/integrations/santeh24/search` в inventory. Витрина рендерит товары из своего кэша в порядке `hits`, id вне кэша пропускает. Попадают в `schemas/storefront.schema.json`.
+- `ServiceSummary{service, version, generated_at, items, status}`, `SummaryItem{key, label, value, level, url}`, `SummaryStatus{key, label, level, at, value}` — ответ `GET /internal/summary` каждого сервиса для консоли владельца (my.santeh24.kz). `level`: `ok | info | warn | danger`; подписи, пороги и ссылки задаёт сервис, консоль только рисует. В `schemas/storefront.schema.json` не входят.
 
 ### 1.21.0
 Рекомендации (связи и компаньоны категорий) — только опциональные поля и DTO, payload 1.20.0 валиден. Значения `RelationType` не менялись.

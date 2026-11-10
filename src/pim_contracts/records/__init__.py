@@ -26,7 +26,18 @@ from pim_contracts.records.product import (
     RelationType,
     TranslationStatus,
 )
-from pim_contracts.records.search import SearchHit, SearchMatch, SearchMode, SearchResponse
+from pim_contracts.records.search import (
+    SearchHit,
+    SearchMatch,
+    SearchMode,
+    SearchResponse,
+)
+from pim_contracts.records.summary import (
+    ServiceSummary,
+    SummaryItem,
+    SummaryLevel,
+    SummaryStatus,
+)
 
 __all__ = [
     "AttributeGroup",
@@ -54,5 +65,9 @@ __all__ = [
     "SearchMatch",
     "SearchMode",
     "SearchResponse",
+    "ServiceSummary",
+    "SummaryItem",
+    "SummaryLevel",
+    "SummaryStatus",
     "TranslationStatus",
 ]

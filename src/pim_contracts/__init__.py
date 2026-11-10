@@ -46,6 +46,10 @@ from pim_contracts.records import (
     SearchMatch,
     SearchMode,
     SearchResponse,
+    ServiceSummary,
+    SummaryItem,
+    SummaryLevel,
+    SummaryStatus,
     TranslationStatus,
 )
 
@@ -94,6 +98,10 @@ __all__ = [
     "SearchMatch",
     "SearchMode",
     "SearchResponse",
+    "ServiceSummary",
     "SourceType",
+    "SummaryItem",
+    "SummaryLevel",
+    "SummaryStatus",
     "TranslationStatus",
 ]

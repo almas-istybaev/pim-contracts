@@ -10,6 +10,7 @@ from pim_contracts import (
     MasterProductRecord,
     MasterProductRelation,
     MasterProductTranslation,
+    ProductVideo,
 )
 from pim_contracts.records import MasterCharacteristicRecord
 
@@ -507,3 +508,38 @@ def test_category_companions_roundtrip():
 def test_category_companion_priority_positive():
     with pytest.raises(ValidationError):
         MasterCategoryCompanion(category_id=1, relation_type="RECOMMENDED", priority=0)
+
+
+def test_product_videos_default_empty_for_old_payload():
+    rec = MasterProductRecord.model_validate({"id": 3, "name": "Ванна", "price": 1.0, "stock": "нету"})
+    assert rec.videos == []
+
+
+def test_product_videos_parse():
+    rec = MasterProductRecord.model_validate(
+        {
+            "id": 4,
+            "name": "Унитаз",
+            "price": 1.0,
+            "stock": "в наличии",
+            "videos": [
+                {
+                    "url": "https://cdn.santeh24.kz/videos/4/review.mp4",
+                    "poster": "https://cdn.santeh24.kz/videos/4/review.jpg",
+                    "duration_sec": 42,
+                    "width": 720,
+                    "height": 1280,
+                    "uploaded_at": "2026-11-10T10:00:00Z",
+                }
+            ],
+        }
+    )
+    video = rec.videos[0]
+    assert isinstance(video, ProductVideo)
+    assert video.height > video.width
+    assert video.title is None
+
+
+def test_product_video_requires_url_and_poster():
+    with pytest.raises(ValidationError):
+        ProductVideo.model_validate({"url": "https://cdn.santeh24.kz/v.mp4"})

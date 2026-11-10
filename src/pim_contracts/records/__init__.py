@@ -23,6 +23,7 @@ from pim_contracts.records.product import (
     MasterProductRecord,
     MasterProductRelation,
     MasterProductTranslation,
+    ProductVideo,
     RelationType,
     TranslationStatus,
 )
@@ -60,6 +61,7 @@ __all__ = [
     "MasterProductTranslation",
     "PartnerOfferRecord",
     "PartnerProductRecord",
+    "ProductVideo",
     "RelationType",
     "SearchHit",
     "SearchMatch",

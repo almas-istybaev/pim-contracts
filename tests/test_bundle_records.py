@@ -124,6 +124,22 @@ def test_bundle_set_minimal():
     assert rec.image is None and rec.product_ids == [] and rec.translations == {}
 
 
+def test_bundle_set_highlights_description():
+    """1.26.0: доводы «почему подходит» и описание; старый payload без них валиден."""
+    old = MasterBundleSetRecord.model_validate({"slug": "s", "name": "Набор", "translations": {"kk": {"name": "Жинақ"}}})
+    assert old.highlights == [] and old.description is None
+    assert old.translations["kk"].highlights is None and old.translations["kk"].description is None
+    rec = MasterBundleSetRecord.model_validate({
+        "slug": "s",
+        "name": "Набор",
+        "highlights": ["Тумба, раковина и зеркало — по 120 см"],
+        "description": "Санузел в одном стиле.",
+        "translations": {"kk": {"highlights": ["Бәрі 120 см"], "description": "Бір стильде."}},
+    })
+    assert MasterBundleSetRecord.model_validate_json(rec.model_dump_json()) == rec
+    assert rec.translations["kk"].highlights == ["Бәрі 120 см"]
+
+
 def test_partner_product_drops_bundle():
     """bundle — розничные данные (max_percent от маржи), партнёрам не отдаются."""
     partner = PartnerProductRecord.model_validate({

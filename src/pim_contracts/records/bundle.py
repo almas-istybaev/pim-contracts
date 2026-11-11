@@ -86,6 +86,14 @@ class MasterBundleSetTranslation(BaseModel):
     model_config = ConfigDict(extra="ignore", from_attributes=True)
 
     name: str | None = Field(default=None, description="Translated set name")
+    highlights: list[str] | None = Field(
+        default=None,
+        description="Translated highlights, same order as the Russian ones (since 1.26.0); null — show the Russian ones",
+    )
+    description: str | None = Field(
+        default=None,
+        description="Translated set description (since 1.26.0); null — use the Russian one",
+    )
 
 
 class MasterBundleSetRecord(BaseModel):
@@ -105,6 +113,20 @@ class MasterBundleSetRecord(BaseModel):
         description="Set text translations keyed by language code, currently only 'kk'",
     )
     image: str | None = Field(default=None, description="Absolute public image URL; null — use product photos")
+    highlights: list[str] = Field(
+        default_factory=list,
+        description=(
+            "1-3 short lines, Russian, why the products fit together, in display order, e.g. "
+            "'Тумба, раковина и зеркало — по 120 см' (since 1.26.0); empty — show none"
+        ),
+    )
+    description: str | None = Field(
+        default=None,
+        description=(
+            "1-2 sentences, Russian, for the set page and its meta description (since 1.26.0); "
+            "null — the storefront keeps the set page out of the index"
+        ),
+    )
     product_ids: list[int] = Field(
         default_factory=list,
         description="Product ids (MasterProductRecord.id) in display order, one unit each",

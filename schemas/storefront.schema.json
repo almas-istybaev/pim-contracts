@@ -475,6 +475,27 @@
       "title": "MasterCategoryCompanion",
       "type": "object"
     },
+    "MasterCategoryFaqItem": {
+      "description": "One question with its answer on a category page (since 1.30.0).",
+      "properties": {
+        "answer": {
+          "description": "Answer, plain text; live figures (prices, sizes) are already filled in by PIM on export",
+          "title": "Answer",
+          "type": "string"
+        },
+        "question": {
+          "description": "Question as a customer asks it",
+          "title": "Question",
+          "type": "string"
+        }
+      },
+      "required": [
+        "question",
+        "answer"
+      ],
+      "title": "MasterCategoryFaqItem",
+      "type": "object"
+    },
     "MasterCategoryRecord": {
       "description": "Category (taxonomy node) as exported by inventory for storefronts.",
       "properties": {
@@ -524,6 +545,14 @@
           "default": null,
           "description": "Category description",
           "title": "Description"
+        },
+        "faq": {
+          "description": "Questions and answers about the products of the category, in Russian, set by the content manager in PIM; live figures are filled in on export and a pair whose figure is unknown is dropped. Product questions only: delivery, payment and returns differ per storefront and are added by the storefront itself. Exported to the own storefront only. Empty — none (since 1.30.0)",
+          "items": {
+            "$ref": "#/$defs/MasterCategoryFaqItem"
+          },
+          "title": "Faq",
+          "type": "array"
         },
         "filter_order": {
           "description": "Attribute codes (MasterCharacteristicRecord.code) of the storefront filters that go first, in this order, already resolved with inheritance (the nearest category with a non-empty list). The reserved code 'price' places the price filter. Filters not listed follow in their usual order; unknown codes are skipped. Empty — no preference (since 1.29.0)",
@@ -708,6 +737,14 @@
           "default": null,
           "description": "Translated category description",
           "title": "Description"
+        },
+        "faq": {
+          "description": "Translated MasterCategoryRecord.faq, same pairs in the same order; empty — none (since 1.30.0)",
+          "items": {
+            "$ref": "#/$defs/MasterCategoryFaqItem"
+          },
+          "title": "Faq",
+          "type": "array"
         },
         "is_outdated": {
           "default": false,
@@ -1931,5 +1968,5 @@
     }
   },
   "title": "pim-contracts storefront records",
-  "x-pim-contracts-version": "1.29.0"
+  "x-pim-contracts-version": "1.30.0"
 }

@@ -328,6 +328,40 @@ class MasterVariantGroup(BaseModel):
     )
 
 
+class MasterProductQuestionTranslation(BaseModel):
+    """One question with its answer translated into one storefront language (since 1.31.0)."""
+
+    model_config = ConfigDict(extra="ignore", from_attributes=True)
+
+    question: str = Field(..., description="Translated question")
+    answer: str = Field(..., description="Translated answer")
+    status: TranslationStatus = Field(
+        ...,
+        description="'machine' — draft translated by Claude, 'reviewed' — checked by a human",
+    )
+
+
+class MasterProductQuestion(BaseModel):
+    """A buyer's question about the product with the store manager's answer (since 1.31.0)."""
+
+    model_config = ConfigDict(extra="ignore", from_attributes=True)
+
+    id: int = Field(..., description="Stable PIM id of the question, unique across products")
+    question: str = Field(
+        ...,
+        description="Question in Russian, as edited by the manager; never holds the buyer's name or contacts",
+    )
+    answer: str = Field(..., description="Manager's answer in Russian, plain text, paragraphs split by a blank line")
+    answered_at: datetime = Field(..., description="When the answer was given (UTC)")
+    translations: dict[str, MasterProductQuestionTranslation] = Field(
+        default_factory=dict,
+        description=(
+            "Translations keyed by language code, currently only 'kk'; a language is present only while it "
+            "translates the current Russian pair, so it is never outdated"
+        ),
+    )
+
+
 class MasterProductRecord(BaseModel):
     """Master product record as exported by inventory for storefronts."""
 
@@ -456,6 +490,13 @@ class MasterProductRecord(BaseModel):
             "null — the category has no size attributes or the product misses one of them (since 1.29.0)"
         ),
     )
+    questions: list[MasterProductQuestion] = Field(
+        default_factory=list,
+        description=(
+            "Buyers' questions answered by the store manager and marked for publishing in PIM, newest answer "
+            "first. Exported to the own storefront only. Empty — none (since 1.31.0)"
+        ),
+    )
 
 
 class MasterCategoryFaqItem(BaseModel):
@@ -521,6 +562,40 @@ class MasterCategoryStats(BaseModel):
     )
     price_max: float | None = Field(
         default=None, description="Highest price the customer pays among in-stock products; null — none in stock"
+    )
+
+
+class MasterCategoryKitTranslation(BaseModel):
+    """Name of a kit category in one storefront language (since 1.31.0)."""
+
+    model_config = ConfigDict(extra="ignore", from_attributes=True)
+
+    name: str = Field(..., description="Translated category name")
+
+
+class MasterCategoryKitItem(BaseModel):
+    """A category whose products complete a purchase from another category, «Дополни свой комплект» (since 1.31.0)."""
+
+    model_config = ConfigDict(extra="ignore", from_attributes=True)
+
+    category_id: int = Field(..., description="MasterCategoryRecord.id of the kit category")
+    slug: str = Field(..., description="Slug of the kit category (MasterCategoryRecord.slug), the link target")
+    name: str = Field(..., description="Category name in Russian")
+    translations: dict[str, MasterCategoryKitTranslation] = Field(
+        default_factory=dict,
+        description="Category name translations keyed by language code, currently only 'kk'",
+    )
+    price_min: float = Field(
+        ...,
+        gt=0,
+        description=(
+            "Lowest price the customer pays (promo included) among published in-stock products of the kit "
+            "category with its subcategories, for «от X ₸»"
+        ),
+    )
+    important: bool = Field(
+        default=False,
+        description="True — needed to install the product (the storefront marks it «Важно для установки»)",
     )
 
 
@@ -608,5 +683,14 @@ class MasterCategoryRecord(BaseModel):
             "PIM; live figures are filled in on export and a pair whose figure is unknown is dropped. Product "
             "questions only: delivery, payment and returns differ per storefront and are added by the storefront "
             "itself. Exported to the own storefront only. Empty — none (since 1.30.0)"
+        ),
+    )
+    kit_categories: list[MasterCategoryKitItem] = Field(
+        default_factory=list,
+        description=(
+            "«Дополни свой комплект» for every product of the category: categories to complete the purchase, in "
+            "the manager's order, already resolved with inheritance from parent categories. A kit category with "
+            "no published product in stock is left out. Exported to the own storefront only. Empty — none "
+            "(since 1.31.0)"
         ),
     )

@@ -23,6 +23,13 @@ pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.15.0"
 
 История 1.5–1.11 — в сообщениях тегов (`git tag -n1`).
 
+### 1.27.0
+Группы вариантов товара (чипы размер/сторона/монтаж/цвет на карточке) — только новые DTO и опциональное поле, payload 1.26.0 валиден:
+- `MasterProductRecord.variant_group: MasterVariantGroup | None` (в конце) — `null`, если у товара нет подтверждённых вариантов.
+- `MasterVariantGroup{id, axes, members}`: группу собирает PIM, подтверждает контент-менеджер; у каждого члена своя карточка и canonical. Цена и остаток членов здесь не дублируются — брать из их собственных записей.
+- `MasterVariantAxis{code, label, label_kk}` — оси в порядке показа; `code`: `size`, `side`, `mount`, `color` — список открытый, неизвестную ось потребитель пропускает.
+- `MasterVariantMember{product_id, slug, values, values_kk}` — сам товар входит в `members`; `values` — `код оси → значение` (RU), `values_kk` падает на `values`; член, которого нет в выгрузке, пропускать.
+
 ### 1.22.0
 Поиск товаров — новые DTO, существующие записи не менялись.
 - `SearchResponse{query, mode: "hybrid" | "lexical", hits}` и `SearchHit{id, score, match: "exact" | "lexical" | "semantic" | "hybrid"}` — ответ `GET /api/v1/integrations/santeh24/search` в inventory. Витрина рендерит товары из своего кэша в порядке `hits`, id вне кэша пропускает. Попадают в `schemas/storefront.schema.json`.

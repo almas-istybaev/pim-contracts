@@ -1144,6 +1144,18 @@
           "title": "Translations",
           "type": "object"
         },
+        "variant_group": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MasterVariantGroup"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Variant group of the product; null — the product has no confirmed variants (since 1.27.0)"
+        },
         "videos": {
           "description": "Video reviews in display order; empty when the product has none (since 1.24.0)",
           "items": {
@@ -1303,6 +1315,115 @@
         "status"
       ],
       "title": "MasterProductTranslation",
+      "type": "object"
+    },
+    "MasterVariantAxis": {
+      "description": "One axis the members of a variant group differ by, e.g. size or side (since 1.27.0).",
+      "properties": {
+        "code": {
+          "description": "Axis key: 'size', 'side' (left/right), 'mount' (e.g. with frame / without, floor / wall) or 'color'. Open list: consumers must skip an axis they do not know",
+          "title": "Code",
+          "type": "string"
+        },
+        "label": {
+          "description": "Axis label in Russian, e.g. 'Размер'",
+          "title": "Label",
+          "type": "string"
+        },
+        "label_kk": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Axis label in Kazakh",
+          "title": "Label Kk"
+        }
+      },
+      "required": [
+        "code",
+        "label"
+      ],
+      "title": "MasterVariantAxis",
+      "type": "object"
+    },
+    "MasterVariantGroup": {
+      "description": "Variant group: cards of one model in one category that differ only by the axes, e.g. sizes and left/right\nof one bath (since 1.27.0). Grouped by PIM and confirmed by the content manager; every member keeps its own\ncard and canonical URL. Price and stock of the members are not repeated here: take them from the members'\nown records.",
+      "properties": {
+        "axes": {
+          "description": "Axes in display order (one row of switches per axis)",
+          "items": {
+            "$ref": "#/$defs/MasterVariantAxis"
+          },
+          "title": "Axes",
+          "type": "array"
+        },
+        "id": {
+          "description": "Variant group id, stable while the group exists",
+          "title": "Id",
+          "type": "integer"
+        },
+        "members": {
+          "description": "Active public members, at least two, sorted by axis values; may include a member absent from the export, which consumers should skip",
+          "items": {
+            "$ref": "#/$defs/MasterVariantMember"
+          },
+          "title": "Members",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "MasterVariantGroup",
+      "type": "object"
+    },
+    "MasterVariantMember": {
+      "description": "One product of a variant group, the product itself included (since 1.27.0).",
+      "properties": {
+        "product_id": {
+          "description": "MasterProductRecord.id of the member",
+          "title": "Product Id",
+          "type": "integer"
+        },
+        "slug": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Storefront slug of the member",
+          "title": "Slug"
+        },
+        "values": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Axis code -> value in Russian, e.g. {'size': '170×70', 'side': 'Левая'}; a missing axis has no value",
+          "title": "Values",
+          "type": "object"
+        },
+        "values_kk": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Axis code -> value in Kazakh; a missing code falls back to `values`",
+          "title": "Values Kk",
+          "type": "object"
+        }
+      },
+      "required": [
+        "product_id"
+      ],
+      "title": "MasterVariantMember",
       "type": "object"
     },
     "ProductVideo": {
@@ -1474,5 +1595,5 @@
     }
   },
   "title": "pim-contracts storefront records",
-  "x-pim-contracts-version": "1.26.0"
+  "x-pim-contracts-version": "1.27.0"
 }

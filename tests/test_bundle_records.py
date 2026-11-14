@@ -146,3 +146,12 @@ def test_partner_product_drops_bundle():
         "id": 1, "name": "Унитаз", "bundle": {"role": "toilet", "max_percent": 7},
     })
     assert "bundle" not in partner.model_dump()
+
+
+def test_bundle_set_scenarios():
+    """1.29.0: сценарии «Готовых решений»; старый payload без них валиден, неизвестный ключ — ошибка."""
+    assert MasterBundleSetRecord.model_validate({"slug": "s", "name": "Набор"}).scenarios == []
+    rec = MasterBundleSetRecord.model_validate({"slug": "s", "name": "Набор", "scenarios": ["small_room", "one_color"]})
+    assert MasterBundleSetRecord.model_validate_json(rec.model_dump_json()).scenarios == ["small_room", "one_color"]
+    with pytest.raises(ValidationError):
+        MasterBundleSetRecord.model_validate({"slug": "s", "name": "Набор", "scenarios": ["loft"]})

@@ -694,3 +694,10 @@ class MasterCategoryRecord(BaseModel):
             "(since 1.31.0)"
         ),
     )
+    sort_order: int | None = Field(
+        default=None,
+        description=(
+            "Position of the category among its siblings in the storefront menu and catalog, set by the content "
+            "manager: lower goes first. None — after the ordered ones, by id (since 1.32.0)"
+        ),
+    )

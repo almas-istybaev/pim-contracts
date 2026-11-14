@@ -448,6 +448,14 @@ class MasterProductRecord(BaseModel):
             "(MasterBrandPageRecord.brand_slug). null — no brand or no slug (since 1.28.0)"
         ),
     )
+    size_label: str | None = Field(
+        default=None,
+        description=(
+            "Key size of the product for listing tiles, e.g. '170×70 см': values of the category's size "
+            "attributes (set in PIM) joined with '×' plus their common unit, the same text in every language. "
+            "null — the category has no size attributes or the product misses one of them (since 1.29.0)"
+        ),
+    )
 
 
 class MasterCategoryTranslation(BaseModel):
@@ -535,5 +543,14 @@ class MasterCategoryRecord(BaseModel):
         description=(
             "Resolved (inherited) key of the group of categories that replace each other, e.g. 'sink', "
             "'mirror'; null — the category substitutes only itself (since 1.21.0)"
+        ),
+    )
+    filter_order: list[str] = Field(
+        default_factory=list,
+        description=(
+            "Attribute codes (MasterCharacteristicRecord.code) of the storefront filters that go first, in this "
+            "order, already resolved with inheritance (the nearest category with a non-empty list). The reserved "
+            "code 'price' places the price filter. Filters not listed follow in their usual order; unknown codes "
+            "are skipped. Empty — no preference (since 1.29.0)"
         ),
     )

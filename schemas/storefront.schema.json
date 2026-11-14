@@ -496,6 +496,69 @@
       "title": "MasterCategoryFaqItem",
       "type": "object"
     },
+    "MasterCategoryKitItem": {
+      "description": "A category whose products complete a purchase from another category, «Дополни свой комплект» (since 1.31.0).",
+      "properties": {
+        "category_id": {
+          "description": "MasterCategoryRecord.id of the kit category",
+          "title": "Category Id",
+          "type": "integer"
+        },
+        "important": {
+          "default": false,
+          "description": "True — needed to install the product (the storefront marks it «Важно для установки»)",
+          "title": "Important",
+          "type": "boolean"
+        },
+        "name": {
+          "description": "Category name in Russian",
+          "title": "Name",
+          "type": "string"
+        },
+        "price_min": {
+          "description": "Lowest price the customer pays (promo included) among published in-stock products of the kit category with its subcategories, for «от X ₸»",
+          "exclusiveMinimum": 0,
+          "title": "Price Min",
+          "type": "number"
+        },
+        "slug": {
+          "description": "Slug of the kit category (MasterCategoryRecord.slug), the link target",
+          "title": "Slug",
+          "type": "string"
+        },
+        "translations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/MasterCategoryKitTranslation"
+          },
+          "description": "Category name translations keyed by language code, currently only 'kk'",
+          "title": "Translations",
+          "type": "object"
+        }
+      },
+      "required": [
+        "category_id",
+        "slug",
+        "name",
+        "price_min"
+      ],
+      "title": "MasterCategoryKitItem",
+      "type": "object"
+    },
+    "MasterCategoryKitTranslation": {
+      "description": "Name of a kit category in one storefront language (since 1.31.0).",
+      "properties": {
+        "name": {
+          "description": "Translated category name",
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "MasterCategoryKitTranslation",
+      "type": "object"
+    },
     "MasterCategoryRecord": {
       "description": "Category (taxonomy node) as exported by inventory for storefronts.",
       "properties": {
@@ -566,6 +629,14 @@
           "description": "Category primary key",
           "title": "Id",
           "type": "integer"
+        },
+        "kit_categories": {
+          "description": "«Дополни свой комплект» for every product of the category: categories to complete the purchase, in the manager's order, already resolved with inheritance from parent categories. A kit category with no published product in stock is left out. Exported to the own storefront only. Empty — none (since 1.31.0)",
+          "items": {
+            "$ref": "#/$defs/MasterCategoryKitItem"
+          },
+          "title": "Kit Categories",
+          "type": "array"
         },
         "name": {
           "description": "Category name",
@@ -1154,6 +1225,79 @@
       "title": "MasterProductPromoTranslation",
       "type": "object"
     },
+    "MasterProductQuestion": {
+      "description": "A buyer's question about the product with the store manager's answer (since 1.31.0).",
+      "properties": {
+        "answer": {
+          "description": "Manager's answer in Russian, plain text, paragraphs split by a blank line",
+          "title": "Answer",
+          "type": "string"
+        },
+        "answered_at": {
+          "description": "When the answer was given (UTC)",
+          "format": "date-time",
+          "title": "Answered At",
+          "type": "string"
+        },
+        "id": {
+          "description": "Stable PIM id of the question, unique across products",
+          "title": "Id",
+          "type": "integer"
+        },
+        "question": {
+          "description": "Question in Russian, as edited by the manager; never holds the buyer's name or contacts",
+          "title": "Question",
+          "type": "string"
+        },
+        "translations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/MasterProductQuestionTranslation"
+          },
+          "description": "Translations keyed by language code, currently only 'kk'; a language is present only while it translates the current Russian pair, so it is never outdated",
+          "title": "Translations",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "question",
+        "answer",
+        "answered_at"
+      ],
+      "title": "MasterProductQuestion",
+      "type": "object"
+    },
+    "MasterProductQuestionTranslation": {
+      "description": "One question with its answer translated into one storefront language (since 1.31.0).",
+      "properties": {
+        "answer": {
+          "description": "Translated answer",
+          "title": "Answer",
+          "type": "string"
+        },
+        "question": {
+          "description": "Translated question",
+          "title": "Question",
+          "type": "string"
+        },
+        "status": {
+          "description": "'machine' — draft translated by Claude, 'reviewed' — checked by a human",
+          "enum": [
+            "machine",
+            "reviewed"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "question",
+        "answer",
+        "status"
+      ],
+      "title": "MasterProductQuestionTranslation",
+      "type": "object"
+    },
     "MasterProductRecord": {
       "description": "Master product record as exported by inventory for storefronts.",
       "properties": {
@@ -1345,6 +1489,14 @@
           ],
           "default": null,
           "description": "Active promo; null when the product is sold at the regular price (since 1.17.0)"
+        },
+        "questions": {
+          "description": "Buyers' questions answered by the store manager and marked for publishing in PIM, newest answer first. Exported to the own storefront only. Empty — none (since 1.31.0)",
+          "items": {
+            "$ref": "#/$defs/MasterProductQuestion"
+          },
+          "title": "Questions",
+          "type": "array"
         },
         "related": {
           "description": "Linked products: manual links first in the order the manager set them, then generated ones by score descending (since 1.21.0); the linked product may be absent from the export (out of stock, not public) (since 1.8.0)",
@@ -1968,5 +2120,5 @@
     }
   },
   "title": "pim-contracts storefront records",
-  "x-pim-contracts-version": "1.30.0"
+  "x-pim-contracts-version": "1.31.0"
 }

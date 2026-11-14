@@ -650,3 +650,64 @@ def test_category_faq_optional_since_1_30() -> None:
     assert new.translations["kk"].faq[0].answer == "18 000 ₸-ден."
     with pytest.raises(ValidationError):
         MasterCategoryRecord.model_validate({"id": 1, "name": "Тумбы", "faq": [{"question": "Без ответа"}]})
+
+
+def test_product_questions_optional_since_1_31() -> None:
+    old = MasterProductRecord.model_validate({"id": 1, "name": "Смеситель", "price": 12500.0, "stock": "в наличии"})
+    assert old.questions == []
+    new = MasterProductRecord.model_validate(
+        {
+            "id": 1,
+            "name": "Смеситель",
+            "price": 12500.0,
+            "stock": "в наличии",
+            "questions": [
+                {
+                    "id": 7,
+                    "question": "Подходит к раковине с одним отверстием?",
+                    "answer": "Да, монтаж в одно отверстие.",
+                    "answered_at": "2026-11-10T08:30:00Z",
+                    "translations": {
+                        "kk": {"question": "Бір тесікке келе ме?", "answer": "Иә.", "status": "machine"}
+                    },
+                    "future": 1,
+                }
+            ],
+        }
+    )
+    q = new.questions[0]
+    assert q.id == 7 and q.answered_at.year == 2026
+    assert q.translations["kk"].status == "machine"
+    with pytest.raises(ValidationError):
+        MasterProductRecord.model_validate(
+            {"id": 1, "name": "Смеситель", "price": 1.0, "stock": "x", "questions": [{"id": 1, "question": "?"}]}
+        )
+
+
+def test_category_kit_categories_optional_since_1_31() -> None:
+    old = MasterCategoryRecord.model_validate({"id": 1, "name": "Унитазы"})
+    assert old.kit_categories == []
+    new = MasterCategoryRecord.model_validate(
+        {
+            "id": 1,
+            "name": "Унитазы",
+            "kit_categories": [
+                {
+                    "category_id": 5,
+                    "slug": "installyacii",
+                    "name": "Инсталляции",
+                    "translations": {"kk": {"name": "Инсталляциялар"}},
+                    "price_min": 45900,
+                    "important": True,
+                },
+                {"category_id": 6, "slug": "sidenya", "name": "Сиденья", "price_min": 9900},
+            ],
+        }
+    )
+    kit = new.kit_categories
+    assert kit[0].important is True and kit[0].translations["kk"].name == "Инсталляциялар"
+    assert kit[1].important is False and kit[1].translations == {}
+    with pytest.raises(ValidationError):
+        MasterCategoryRecord.model_validate(
+            {"id": 1, "name": "Унитазы", "kit_categories": [{"category_id": 5, "slug": "s", "name": "n", "price_min": 0}]}
+        )

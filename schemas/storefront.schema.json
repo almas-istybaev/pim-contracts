@@ -690,6 +690,19 @@
           "description": "URL slug owned by PIM (since 1.3.0); it is not changed when the category is renamed, the admin may change it manually, former values are kept in previous_slugs (since 1.13.0)",
           "title": "Slug"
         },
+        "sort_order": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Position of the category among its siblings in the storefront menu and catalog, set by the content manager: lower goes first. None — after the ordered ones, by id (since 1.32.0)",
+          "title": "Sort Order"
+        },
         "stats": {
           "anyOf": [
             {
@@ -2120,5 +2133,5 @@
     }
   },
   "title": "pim-contracts storefront records",
-  "x-pim-contracts-version": "1.31.0"
+  "x-pim-contracts-version": "1.32.0"
 }

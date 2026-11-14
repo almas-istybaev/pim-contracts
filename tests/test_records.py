@@ -711,3 +711,8 @@ def test_category_kit_categories_optional_since_1_31() -> None:
         MasterCategoryRecord.model_validate(
             {"id": 1, "name": "Унитазы", "kit_categories": [{"category_id": 5, "slug": "s", "name": "n", "price_min": 0}]}
         )
+
+
+def test_category_sort_order_optional_since_1_32() -> None:
+    assert MasterCategoryRecord.model_validate({"id": 1, "name": "Душевые"}).sort_order is None
+    assert MasterCategoryRecord.model_validate({"id": 1, "name": "Душевые", "sort_order": 10}).sort_order == 10

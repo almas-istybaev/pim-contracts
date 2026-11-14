@@ -1,6 +1,10 @@
 """
 Read-only master record DTOs served by inventory to storefront consumers.
 """
+from pim_contracts.records.brand import (
+    MasterBrandPageRecord,
+    MasterBrandPageTranslation,
+)
 from pim_contracts.records.bundle import (
     BundleRole,
     BundleRules,
@@ -49,6 +53,8 @@ __all__ = [
     "BundleRole",
     "BundleRules",
     "BundleTier",
+    "MasterBrandPageRecord",
+    "MasterBrandPageTranslation",
     "MasterBundleSetRecord",
     "MasterBundleSetTranslation",
     "MasterCategoryCompanion",

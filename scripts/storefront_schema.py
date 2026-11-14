@@ -13,6 +13,7 @@ from pydantic.json_schema import models_json_schema
 
 from pim_contracts import (
     BundleRules,
+    MasterBrandPageRecord,
     MasterBundleSetRecord,
     MasterCategoryRecord,
     MasterProductRecord,
@@ -32,6 +33,7 @@ def render() -> str:
             (BundleRules, "serialization"),
             (MasterBundleSetRecord, "serialization"),
             (SearchResponse, "serialization"),
+            (MasterBrandPageRecord, "serialization"),
         ],
         title="pim-contracts storefront records",
     )

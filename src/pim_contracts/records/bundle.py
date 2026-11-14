@@ -5,7 +5,17 @@ The cart lives only in the browser and is sent to WhatsApp, so the storefront co
 discount from these published rules plus MasterProductRecord.bundle of each product.
 Consumers: santeh24.kz frontend/src/lib/pim.ts.
 """
+from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, Field
+
+BundleSetScenario = Literal["small_room", "shower", "bath", "one_color", "storage", "premium"]
+"""
+What a ready-made set solves, for the storefront's «Готовые решения» filters (since 1.29.0):
+small_room — fits a small bathroom; shower — shower enclosure instead of a bath; bath — built around a bath;
+one_color — all metal (mixers, shower, mirror frame) in one finish; storage — extra storage (mirror cabinet,
+drawers); premium — premium segment. New keys are a minor bump; a consumer skips keys it does not know.
+"""
 
 
 class BundleTier(BaseModel):
@@ -130,4 +140,11 @@ class MasterBundleSetRecord(BaseModel):
     product_ids: list[int] = Field(
         default_factory=list,
         description="Product ids (MasterProductRecord.id) in display order, one unit each",
+    )
+    scenarios: list[BundleSetScenario] = Field(
+        default_factory=list,
+        description=(
+            "What the set solves, set by the content manager, no repeats (since 1.29.0); "
+            "empty — the set is shown under no scenario filter"
+        ),
     )

@@ -317,6 +317,22 @@
           "title": "Product Ids",
           "type": "array"
         },
+        "scenarios": {
+          "description": "What the set solves, set by the content manager, no repeats (since 1.29.0); empty — the set is shown under no scenario filter",
+          "items": {
+            "enum": [
+              "small_room",
+              "shower",
+              "bath",
+              "one_color",
+              "storage",
+              "premium"
+            ],
+            "type": "string"
+          },
+          "title": "Scenarios",
+          "type": "array"
+        },
         "slug": {
           "description": "Stable URL slug of the set, owned by PIM",
           "title": "Slug",
@@ -1781,5 +1797,5 @@
     }
   },
   "title": "pim-contracts storefront records",
-  "x-pim-contracts-version": "1.28.0"
+  "x-pim-contracts-version": "1.29.0"
 }

@@ -10,7 +10,11 @@ from pim_contracts import (
     PartnerProductRecord,
 )
 
-RETAIL_FIELDS = {"price", "price_updated_at", "cost_price", "stock", "stock_quantity", "promo", "bundle", "sort_rank"}
+# Retail and storefront-only fields; variant_group (1.27.0) is not part of the Partner API.
+RETAIL_FIELDS = {
+    "price", "price_updated_at", "cost_price", "stock", "stock_quantity", "promo", "bundle", "sort_rank",
+    "variant_group",
+}
 
 
 def test_partner_product_fields_match_master_without_retail():
@@ -32,6 +36,7 @@ def test_master_product_field_order_unchanged():
         "description", "seo_title", "seo_description", "characteristics",
         "price", "price_updated_at", "cost_price", "stock", "stock_quantity",
         "photos", "videos", "translations", "related", "promo", "bundle", "sort_rank",
+        "variant_group",
     ]
 
 

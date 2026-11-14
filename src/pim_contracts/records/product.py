@@ -272,6 +272,62 @@ class ProductVideo(BaseModel):
     uploaded_at: datetime | None = Field(default=None, description="UTC time the video was uploaded to PIM")
 
 
+class MasterVariantAxis(BaseModel):
+    """One axis the members of a variant group differ by, e.g. size or side (since 1.27.0)."""
+
+    model_config = ConfigDict(extra="ignore", from_attributes=True)
+
+    code: str = Field(
+        ...,
+        description=(
+            "Axis key: 'size', 'side' (left/right), 'mount' (e.g. with frame / without, floor / wall) or 'color'. "
+            "Open list: consumers must skip an axis they do not know"
+        ),
+    )
+    label: str = Field(..., description="Axis label in Russian, e.g. 'Размер'")
+    label_kk: str | None = Field(default=None, description="Axis label in Kazakh")
+
+
+class MasterVariantMember(BaseModel):
+    """One product of a variant group, the product itself included (since 1.27.0)."""
+
+    model_config = ConfigDict(extra="ignore", from_attributes=True)
+
+    product_id: int = Field(..., description="MasterProductRecord.id of the member")
+    slug: str | None = Field(default=None, description="Storefront slug of the member")
+    values: dict[str, str] = Field(
+        default_factory=dict,
+        description="Axis code -> value in Russian, e.g. {'size': '170×70', 'side': 'Левая'}; a missing axis has no value",
+    )
+    values_kk: dict[str, str] = Field(
+        default_factory=dict,
+        description="Axis code -> value in Kazakh; a missing code falls back to `values`",
+    )
+
+
+class MasterVariantGroup(BaseModel):
+    """
+    Variant group: cards of one model in one category that differ only by the axes, e.g. sizes and left/right
+    of one bath (since 1.27.0). Grouped by PIM and confirmed by the content manager; every member keeps its own
+    card and canonical URL. Price and stock of the members are not repeated here: take them from the members'
+    own records.
+    """
+
+    model_config = ConfigDict(extra="ignore", from_attributes=True)
+
+    id: int = Field(..., description="Variant group id, stable while the group exists")
+    axes: list[MasterVariantAxis] = Field(
+        default_factory=list, description="Axes in display order (one row of switches per axis)"
+    )
+    members: list[MasterVariantMember] = Field(
+        default_factory=list,
+        description=(
+            "Active public members, at least two, sorted by axis values; may include a member absent from the "
+            "export, which consumers should skip"
+        ),
+    )
+
+
 class MasterProductRecord(BaseModel):
     """Master product record as exported by inventory for storefronts."""
 
@@ -380,6 +436,10 @@ class MasterProductRecord(BaseModel):
             "first. Applies inside the storefront's own stock and photo groups (in-stock with a photo first); "
             "null — no rank, after ranked products (since 1.25.0)"
         ),
+    )
+    variant_group: MasterVariantGroup | None = Field(
+        default=None,
+        description="Variant group of the product; null — the product has no confirmed variants (since 1.27.0)",
     )
 
 

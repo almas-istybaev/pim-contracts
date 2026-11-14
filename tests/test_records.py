@@ -10,6 +10,7 @@ from pim_contracts import (
     MasterProductRecord,
     MasterProductRelation,
     MasterProductTranslation,
+    MasterVariantGroup,
     ProductVideo,
 )
 from pim_contracts.records import MasterCharacteristicRecord
@@ -555,3 +556,58 @@ def test_product_sort_rank_not_negative():
     assert rec.sort_rank == 2
     with pytest.raises(ValidationError):
         MasterProductRecord.model_validate({"id": 3, "name": "Ванна", "price": 1.0, "stock": "нету", "sort_rank": -1})
+
+
+def test_product_variant_group_default_none_for_old_payload():
+    rec = MasterProductRecord.model_validate({"id": 3, "name": "Ванна", "price": 1.0, "stock": "нету"})
+    assert rec.variant_group is None
+
+
+def test_product_variant_group_parses_and_roundtrips():
+    rec = MasterProductRecord.model_validate(
+        {
+            "id": 10,
+            "name": "Ванна акриловая 170×70 левая",
+            "price": 1.0,
+            "stock": "в наличии",
+            "variant_group": {
+                "id": 7,
+                "axes": [
+                    {"code": "size", "label": "Размер", "label_kk": "Өлшемі"},
+                    {"code": "side", "label": "Сторона"},
+                ],
+                "members": [
+                    {
+                        "product_id": 10,
+                        "slug": "vanna-170-70-levaya",
+                        "values": {"size": "170×70", "side": "Левая"},
+                        "values_kk": {"side": "Сол жақ"},
+                    },
+                    {"product_id": 11, "values": {"size": "170×70", "side": "Правая"}},
+                ],
+            },
+        }
+    )
+    group = rec.variant_group
+    assert isinstance(group, MasterVariantGroup)
+    assert [a.code for a in group.axes] == ["size", "side"]
+    assert group.axes[1].label_kk is None
+    assert group.members[1].slug is None
+    assert group.members[1].values_kk == {}
+    restored = MasterProductRecord.model_validate_json(rec.model_dump_json())
+    assert restored.variant_group == group
+
+
+def test_variant_group_unknown_axis_does_not_break():
+    group = MasterVariantGroup.model_validate(
+        {
+            "id": 1,
+            "axes": [{"code": "foo", "label": "Что-то новое", "future_field": 1}],
+            "members": [
+                {"product_id": 1, "values": {"foo": "a"}},
+                {"product_id": 2, "values": {"foo": "b"}},
+            ],
+        }
+    )
+    assert group.axes[0].code == "foo"
+    assert [m.values["foo"] for m in group.members] == ["a", "b"]

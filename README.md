@@ -23,6 +23,12 @@ pip install "git+ssh://git@github.com/almas-istybaev/pim-contracts.git@v1.15.0"
 
 История 1.5–1.11 — в сообщениях тегов (`git tag -n1`).
 
+### 1.28.0
+Посадочные «бренд × категория» — новые DTO и опциональное поле, payload 1.27.0 валиден:
+- `MasterProductRecord.brand_slug: str | None` (в конце) — стабильный slug бренда от PIM, ссылка с карточки на страницу бренда; `null` — нет бренда.
+- `MasterBrandPageRecord` — ответ `GET /api/v1/integrations/santeh24/brand-pages` (список): `brand`, `brand_slug`, `previous_brand_slugs` (301, по умолчанию `[]`), `category_slug` (листовая), `slug` (`brand-<brand_slug>`), `product_count` (опубликованные, вкл. «нет в наличии»), `in_stock_count`, `price_min`/`price_max` (в наличии, `null` если нет), `indexable` (`false` → noindex и не в sitemap), `h1`, `seo_title`, `seo_description`, `translations{kk: MasterBrandPageTranslation{h1, seo_title, seo_description}}`. Маршрут витрины: `/catalog/<category_slug>/<slug>/`.
+- `brand_slug` в `PartnerProductRecord` не входит. `MasterBrandPageRecord` попадает в `schemas/storefront.schema.json`.
+
 ### 1.27.0
 Группы вариантов товара (чипы размер/сторона/монтаж/цвет на карточке) — только новые DTO и опциональное поле, payload 1.26.0 валиден:
 - `MasterProductRecord.variant_group: MasterVariantGroup | None` (в конце) — `null`, если у товара нет подтверждённых вариантов.

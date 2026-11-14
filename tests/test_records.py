@@ -611,3 +611,21 @@ def test_variant_group_unknown_axis_does_not_break():
     )
     assert group.axes[0].code == "foo"
     assert [m.values["foo"] for m in group.members] == ["a", "b"]
+
+
+def test_category_stats_optional_since_1_29() -> None:
+    from pim_contracts import MasterCategoryRecord
+
+    old = MasterCategoryRecord.model_validate({"id": 1, "name": "Тумбы"})
+    assert old.stats is None and old.stats_text is None
+    new = MasterCategoryRecord.model_validate(
+        {
+            "id": 1,
+            "name": "Тумбы",
+            "stats": {"product_count": 12, "in_stock_count": 8, "price_min": 25900, "price_max": 89000},
+            "stats_text": "В каталоге 12 моделей.",
+            "translations": {"kk": {"status": "reviewed", "stats_text": "Каталогта 12 модель."}},
+        }
+    )
+    assert new.stats is not None and new.stats.in_stock_count == 8
+    assert new.translations["kk"].stats_text == "Каталогта 12 модель."

@@ -63,3 +63,21 @@ def test_brand_page_required_fields(field):
 def test_brand_page_counts_not_negative():
     with pytest.raises(ValidationError):
         MasterBrandPageRecord.model_validate({**PAGE, "in_stock_count": -1})
+
+
+def test_brand_page_stats_text_optional_since_1_29() -> None:
+    from pim_contracts import MasterBrandPageRecord
+
+    base = {
+        "brand": "Gloria",
+        "brand_slug": "gloria",
+        "category_slug": "kryuchki",
+        "slug": "brand-gloria",
+        "product_count": 5,
+        "in_stock_count": 4,
+        "indexable": True,
+        "h1": "Крючки Gloria",
+    }
+    assert MasterBrandPageRecord.model_validate(base).stats_text is None
+    page = MasterBrandPageRecord.model_validate({**base, "stats_text": "x", "translations": {"kk": {"stats_text": "y"}}})
+    assert page.stats_text == "x" and page.translations["kk"].stats_text == "y"

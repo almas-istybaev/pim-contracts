@@ -629,3 +629,24 @@ def test_category_stats_optional_since_1_29() -> None:
     )
     assert new.stats is not None and new.stats.in_stock_count == 8
     assert new.translations["kk"].stats_text == "Каталогта 12 модель."
+
+
+def test_category_faq_optional_since_1_30() -> None:
+    old = MasterCategoryRecord.model_validate(
+        {"id": 1, "name": "Тумбы", "translations": {"kk": {"status": "reviewed", "name": "Тумбалар"}}}
+    )
+    assert old.faq == [] and old.translations["kk"].faq == []
+    new = MasterCategoryRecord.model_validate(
+        {
+            "id": 1,
+            "name": "Тумбы",
+            "faq": [{"question": "Сколько стоит?", "answer": "От 18 000 до 193 200 ₸.", "future": 1}],
+            "translations": {
+                "kk": {"status": "reviewed", "faq": [{"question": "Қанша тұрады?", "answer": "18 000 ₸-ден."}]}
+            },
+        }
+    )
+    assert new.faq[0].question == "Сколько стоит?"
+    assert new.translations["kk"].faq[0].answer == "18 000 ₸-ден."
+    with pytest.raises(ValidationError):
+        MasterCategoryRecord.model_validate({"id": 1, "name": "Тумбы", "faq": [{"question": "Без ответа"}]})

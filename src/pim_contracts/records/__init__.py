@@ -8,6 +8,7 @@ from pim_contracts.records.brand import (
 from pim_contracts.records.bundle import (
     BundleRole,
     BundleRules,
+    BundleSetScenario,
     BundleTier,
     MasterBundleSetRecord,
     MasterBundleSetTranslation,
@@ -52,6 +53,7 @@ __all__ = [
     "AttributeSection",
     "BundleRole",
     "BundleRules",
+    "BundleSetScenario",
     "BundleTier",
     "MasterBrandPageRecord",
     "MasterBrandPageTranslation",

@@ -10,10 +10,10 @@ from pim_contracts import (
     PartnerProductRecord,
 )
 
-# Retail and storefront-only fields; variant_group (1.27.0) and brand_slug (1.28.0), size_label (1.29.0), questions (1.31.0) are not part of the Partner API.
+# Retail and storefront-only fields; variant_group (1.27.0) and brand_slug (1.28.0), size_label (1.29.0), questions (1.31.0), content_updated_at (1.33.0) are not part of the Partner API.
 RETAIL_FIELDS = {
     "price", "price_updated_at", "cost_price", "stock", "stock_quantity", "promo", "bundle", "sort_rank",
-    "variant_group", "brand_slug", "size_label", "questions",
+    "variant_group", "brand_slug", "size_label", "questions", "content_updated_at",
 }
 
 
@@ -36,7 +36,7 @@ def test_master_product_field_order_unchanged():
         "description", "seo_title", "seo_description", "characteristics",
         "price", "price_updated_at", "cost_price", "stock", "stock_quantity",
         "photos", "videos", "translations", "related", "promo", "bundle", "sort_rank",
-        "variant_group", "brand_slug", "size_label", "questions",
+        "variant_group", "brand_slug", "size_label", "questions", "content_updated_at",
     ]
 
 

@@ -497,6 +497,15 @@ class MasterProductRecord(BaseModel):
             "first. Exported to the own storefront only. Empty — none (since 1.31.0)"
         ),
     )
+    content_updated_at: datetime | None = Field(
+        default=None,
+        description=(
+            "UTC time of the last change to the product card that matters to a buyer: name, description, "
+            "characteristics (any language), media, retail price, publication or indexing status, a switch "
+            "between in stock and out of stock. A stock quantity change that keeps availability does not count. "
+            "Storefront sitemap lastmod. Exported to the own storefront only; null when unknown (since 1.33.0)"
+        ),
+    )
 
 
 class MasterCategoryFaqItem(BaseModel):

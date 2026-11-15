@@ -1386,6 +1386,20 @@
           "title": "Characteristics",
           "type": "array"
         },
+        "content_updated_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "UTC time of the last change to the product card that matters to a buyer: name, description, characteristics (any language), media, retail price, publication or indexing status, a switch between in stock and out of stock. A stock quantity change that keeps availability does not count. Storefront sitemap lastmod. Exported to the own storefront only; null when unknown (since 1.33.0)",
+          "title": "Content Updated At"
+        },
         "cost_price": {
           "anyOf": [
             {
@@ -2133,5 +2147,5 @@
     }
   },
   "title": "pim-contracts storefront records",
-  "x-pim-contracts-version": "1.32.0"
+  "x-pim-contracts-version": "1.33.0"
 }

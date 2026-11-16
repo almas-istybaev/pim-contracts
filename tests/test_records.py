@@ -450,6 +450,28 @@ def test_promo_clearance_defaults():
     assert promo.translations == {}
 
 
+def test_promo_starts_at_absent_in_1_33_0_payload():
+    """Payload формата 1.33.0 (promo без starts_at) остаётся валидным."""
+    promo = MasterProductPromo.model_validate(
+        {"type": "sale", "compare_at_price": 10000.0, "until": "2027-03-25T18:59:59Z"}
+    )
+    assert promo.starts_at is None
+
+
+def test_promo_starts_at_roundtrip():
+    rec = MasterProductRecord.model_validate({
+        "id": 16, "name": "Смеситель", "price": 8500.0, "stock": "в наличии",
+        "promo": {
+            "type": "sale", "compare_at_price": 10000.0,
+            "starts_at": "2027-03-14T19:00:00Z", "until": "2027-03-25T18:59:59Z",
+        },
+    })
+    restored = MasterProductRecord.model_validate_json(rec.model_dump_json())
+    assert restored == rec
+    assert restored.promo.starts_at is not None and restored.promo.starts_at.utcoffset() is not None
+    assert restored.promo.starts_at < restored.promo.until
+
+
 def test_promo_type_accepts_unknown_value():
     """Новые виды акций не ломают старых потребителей."""
     assert MasterProductPromo(type="flash", compare_at_price=2.0).type == "flash"

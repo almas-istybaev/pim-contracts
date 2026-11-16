@@ -1170,6 +1170,20 @@
           "description": "URL-safe campaign slug for grouping products on the storefront promo page",
           "title": "Slug"
         },
+        "starts_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "UTC time when the promo started: the start date set by the content manager, for clearance the moment of the markdown. compare_at_price is frozen at this moment. Used as the start of g:sale_price_effective_date in the Merchant feed; null only for old records without a start date — consumers must not invent one (since 1.34.0)",
+          "title": "Starts At"
+        },
         "translations": {
           "additionalProperties": {
             "$ref": "#/$defs/MasterProductPromoTranslation"
@@ -2147,5 +2161,5 @@
     }
   },
   "title": "pim-contracts storefront records",
-  "x-pim-contracts-version": "1.33.0"
+  "x-pim-contracts-version": "1.34.0"
 }

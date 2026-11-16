@@ -201,6 +201,15 @@ class MasterProductPromo(BaseModel):
         ...,
         description="Regular retail price before the promo, always greater than the record price",
     )
+    starts_at: datetime | None = Field(
+        default=None,
+        description=(
+            "UTC time when the promo started: the start date set by the content manager, for "
+            "clearance the moment of the markdown. compare_at_price is frozen at this moment. "
+            "Used as the start of g:sale_price_effective_date in the Merchant feed; null only for "
+            "old records without a start date — consumers must not invent one (since 1.34.0)"
+        ),
+    )
     until: datetime | None = Field(
         default=None,
         description=(

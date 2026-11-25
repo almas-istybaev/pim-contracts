@@ -515,6 +515,14 @@ class MasterProductRecord(BaseModel):
             "Storefront sitemap lastmod. Exported to the own storefront only; null when unknown (since 1.33.0)"
         ),
     )
+    out_of_stock_since: datetime | None = Field(
+        default=None,
+        description=(
+            "UTC time since which the product has had no stock. The storefront counts days without stock "
+            "from it (e.g. noindex after 30 days). null — the product is in stock or the date is unknown; "
+            "consumers must not invent one (since 1.35.0)"
+        ),
+    )
 
 
 class MasterCategoryFaqItem(BaseModel):

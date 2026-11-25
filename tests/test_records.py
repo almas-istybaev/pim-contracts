@@ -39,6 +39,7 @@ def test_product_optional_fields_default_to_none():
         "mpn", "gpc_id", "brand", "shipping_weight", "shipping_length",
         "shipping_width", "shipping_height", "category", "description",
         "cost_price", "category_slug", "price_updated_at", "content_updated_at",
+        "out_of_stock_since",
     ):
         assert getattr(rec, field) is None, field
 
@@ -63,6 +64,24 @@ def test_product_content_updated_at_parses_iso_and_old_payload_has_none():
     assert rec.content_updated_at is not None
     assert rec.content_updated_at.utcoffset() is not None
     assert rec.model_dump(mode="json")["content_updated_at"].startswith("2026-11-16T05:00:00")
+
+
+def test_product_out_of_stock_since_absent_in_1_34_0_payload():
+    """Payload формата 1.34.0 (без out_of_stock_since) остаётся валидным."""
+    old = MasterProductRecord.model_validate({"id": 7, "name": "Унитаз", "price": 1.0, "stock": "нету"})
+    assert old.out_of_stock_since is None
+    assert old.model_dump(mode="json")["out_of_stock_since"] is None
+
+
+def test_product_out_of_stock_since_roundtrip():
+    rec = MasterProductRecord.model_validate(
+        {"id": 7, "name": "Унитаз", "price": 1.0, "stock": "нету", "stock_quantity": 0.0,
+         "out_of_stock_since": "2026-10-20T04:15:00Z"}
+    )
+    assert rec.out_of_stock_since is not None
+    assert rec.out_of_stock_since.utcoffset() is not None
+    assert rec.model_dump(mode="json")["out_of_stock_since"].startswith("2026-10-20T04:15:00")
+    assert MasterProductRecord.model_validate_json(rec.model_dump_json()) == rec
 
 
 def test_product_characteristics_parse_nested():

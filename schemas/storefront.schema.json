@@ -1484,6 +1484,20 @@
           "title": "Name",
           "type": "string"
         },
+        "out_of_stock_since": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "UTC time since which the product has had no stock. The storefront counts days without stock from it (e.g. noindex after 30 days). null — the product is in stock or the date is unknown; consumers must not invent one (since 1.35.0)",
+          "title": "Out Of Stock Since"
+        },
         "photos": {
           "description": "Absolute public photo URLs",
           "items": {
@@ -2161,5 +2175,5 @@
     }
   },
   "title": "pim-contracts storefront records",
-  "x-pim-contracts-version": "1.34.0"
+  "x-pim-contracts-version": "1.35.0"
 }
